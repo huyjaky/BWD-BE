@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "vvtba526_bwd",
+    "password": "huyhuyhuy12",
+    "database": "vvtba526_BWD_olympus",
+    "host": "112.213.89.194",
+    "dialect": "mariadb"
+  },
+  "test": {
+    "username": "vvtba526_bwd",
+    "password": "huyhuyhuy12",
+    "database": "vvtba526_BWD_olympus",
+    "host": "112.213.89.194",
+    "dialect": "mariadb"
+  },
+  "production": {
+    "username": "vvtba526_bwd",
+    "password": "huyhuyhuy12",
+    "database": "vvtba526_BWD_olympus",
+    "host": "112.213.89.194",
+    "dialect": "mariadb"
+  }
+}
