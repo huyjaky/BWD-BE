@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 viewEngine(app);
 router(app);
 
-let port = process.env.PORT || 8080;
+let port = process.env.API_PORT || 8080;
 app.listen(port, () => {
-  console.log('Server listening on port ', port);
+  console.log('API server listening on port ', port);
 });
 
