@@ -10,12 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      img.hasOne(models.manageImg, {foreignKey: 'ImgId'})
     }
   }
   img.init({
     ImgId: DataTypes.STRING,
-
-    // primary key
     Path: {
       type: DataTypes.STRING,
       allowNull: false,

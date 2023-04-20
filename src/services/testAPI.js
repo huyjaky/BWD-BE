@@ -2,29 +2,21 @@ const db = require("../models");
 
 let test = async () => {
   try {
-    const getall = await db.managePlaceOffer.findAll({
+    const getall = await db.house.findAll({
       include: [
         {
-          model: db.placeOffer,
+          model: db.userAcc,
           required: true,
           where: {
-            PlaceOfferId: db.sequelize.col("managePlaceOffer.PlaceOfferId"),
+            UserId: db.sequelize.col("house.PostBy"),
           },
-        },
-        {
-          model: db.house,
-          required: true,
-          where: {
-            HouseId: db.sequelize.col("managePlaceOffer.HouseId"),
-          },
-        },
+        }
       ]
     });
     console.log("check");
     return getall;
   } catch (error) {
-    console.log(error);
-    return 'error' + error;
+    return "error" + error;
   }
 };
 

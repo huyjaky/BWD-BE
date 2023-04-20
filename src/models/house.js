@@ -12,9 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       house.hasOne(models.manageTypeHouse, {foreignKey: 'HouseId'});
       house.hasOne(models.managePlaceOffer, {foreignKey: 'HouseId'});
+      house.hasOne(models.rentalPeriod, {foreignKey: 'HouseId'});
+      house.hasOne(models.rate, {foreignKey: 'HouseId'});
 
       house.belongsTo(models.address, {foreignKey: 'AddressId'});
       house.belongsTo(models.judical, {foreignKey: 'JudicalId'});
+      house.belongsTo(models.userAcc, {foreignKey: 'PostBy', targetKey: 'UserId'});
     }
   }
   house.init({
@@ -36,24 +39,24 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       references: {
-        model: '',
-        key: ''
+        model: 'userAcc',
+        key: 'UserId'
       }
     },
     AddressId: {
       type: DataTypes.STRING,
       allowNull: false,
       references: {
-        model: '',
-        key: '',
+        model: 'address',
+        key: 'AddressId',
       }
     },
     JudicalId: {
       type: DataTypes.STRING,
       allowNull: true,
       references: {
-        model: '',
-        key: ''
+        model: 'judical',
+        key: 'JudicalId'
       }
     }
 
