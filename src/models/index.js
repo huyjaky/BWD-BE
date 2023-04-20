@@ -37,6 +37,11 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+// config add-on
+for (const modelName of Object.keys(db)) {
+  db[modelName].removeAttribute('id');
+}
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

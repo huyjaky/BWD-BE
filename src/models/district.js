@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      district.hasOne(models.address, {foreignKey: 'DistrictId'});
+      
     }
   }
   district.init({
@@ -19,17 +21,14 @@ module.exports = (sequelize, DataTypes) => {
     DistrictId: {
       type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        model: '',
-        key: '',
-      }
+      primaryKey: true
     }
 
   }, {
     sequelize,
     modelName: 'district',
     timestamps: false,
-    tableName: 'district',
+    tableName: 'District',
   });
 
   return district;

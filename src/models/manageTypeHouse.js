@@ -3,21 +3,22 @@ const {
   Model, STRING
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class typeHouse extends Model {
+  class manageTypeHouse extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      typeHouse.hasOne(models.manageTypeHouse, {foreignKey: 'TypeHouseId'})
+      manageTypeHouse.belongsTo(models.house, {foreignKey: 'HouseId'});
+      manageTypeHouse.belongsTo(models.typeHouse, {foreignKey: 'TypeHouseId'});
     }
   }
-  typeHouse.init({
-    TypeHouse: DataTypes.STRING,
+  manageTypeHouse.init({
+    Judical: DataTypes.STRING,
 
     // primary key
-    TypeHouseId: {
+    JudicalId: {
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true
@@ -25,10 +26,10 @@ module.exports = (sequelize, DataTypes) => {
 
   }, {
     sequelize,
-    modelName: 'typeHouse',
+    modelName: 'manageTypeHouse',
     timestamps: false,
-    tableName: 'TypeHouse',
+    tableName: 'ManageTypeHouse',
   });
 
-  return typeHouse;
+  return manageTypeHouse;
 }

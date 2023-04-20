@@ -1,15 +1,17 @@
-const testAPI = require( "../services/testAPI")
+const testAPI = require("../services/testAPI");
 
 let var1 = async (req, res) => {
   try {
     const test = await testAPI.test();
-    return res.json(test);
+    if (test.includes("error")) {
+      return res.status(500).json({ message: "Cannot get API from server" });
+    }
+    return res.status(200).json(test);
   } catch (error) {
-    console.log(error);
-    return;
+    return res.status(500).json({ message: "error" });
   }
-}
+};
 
 module.exports = {
-  var1: var1
-}
+  var1: var1,
+};

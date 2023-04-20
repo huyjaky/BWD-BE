@@ -3,34 +3,33 @@ const {
   Model, STRING
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class PlaceOffer extends Model {
+  class placeOffer extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      placeOffer.hasOne(models.managePlaceOffer, {foreignKey: 'PlaceOfferId'});
+
     }
   }
-  PlaceOffer.init({
+  placeOffer.init({
     PlaceOffer: DataTypes.STRING,
 
     // primary key
     PlaceOfferId: {
       type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        model: '',
-        key: '',
-      }
+      primaryKey: true
     }
 
   }, {
     sequelize,
-    modelName: 'PlaceOffer',
+    modelName: 'placeOffer',
     timestamps: false,
     tableName: 'PlaceOffer',
   });
 
-  return PlaceOffer;
+  return placeOffer;
 };
