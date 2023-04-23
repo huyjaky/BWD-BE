@@ -21,5 +21,3 @@ let port = process.env.AUTH_PORT || 8080;
 app.listen(port, () => {
   console.log('Auth server listening on port ', port);
 });
-
-
