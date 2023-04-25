@@ -35,7 +35,6 @@ const deleteData = async (req, res) => {
 };
 
 
-
 module.exports = {
   getData: getData,
   deleteData: deleteData
