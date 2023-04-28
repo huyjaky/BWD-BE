@@ -42,7 +42,17 @@ const deleteModelData = async (db, models, conditions) => {
   }
 };
 
+const createModel = async (db, Data, models) => {
+  try {
+    const dataRaw = Data;
+    const data = await db[models].create(dataRaw);
+  } catch (error) {
+    return { error }
+  }
+}
+
 module.exports = {
   getModelData: getModelData,
   deleteModelData: deleteModelData,
+  createModel: createModel
 };

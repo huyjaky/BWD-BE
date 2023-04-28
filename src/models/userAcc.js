@@ -3,20 +3,20 @@ const {
   Model, STRING
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class userAcc extends Model {
+  class useracc extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      userAcc.hasOne(models.house, {foreignKey: 'PostBy'});
-      userAcc.hasOne(models.rentalPeriod, {foreignKey: 'UserId'})
-      userAcc.hasOne(models.rate, {foreignKey: 'UserId'})
+      useracc.hasOne(models.house, {foreignKey: 'PostBy'});
+      useracc.hasOne(models.rentalperiod, {foreignKey: 'UserId'})
+      useracc.hasOne(models.rate, {foreignKey: 'UserId'})
 
     }
   }
-  userAcc.init({
+  useracc.init({
     // primary key
     UserId: {
       type: DataTypes.STRING,
@@ -34,10 +34,10 @@ module.exports = (sequelize, DataTypes) => {
     CustomerType: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'userAcc',
+    modelName: 'useracc',
     timestamps: false,
     tableName: 'UserAcc',
   });
 
-  return userAcc;
+  return useracc;
 }

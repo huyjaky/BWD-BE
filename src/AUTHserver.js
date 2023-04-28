@@ -5,7 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 const https = require('https');
 const fs = require('fs');
-const router = require('./routers/webAPI')
+const router= require('./routers/AUTH');
 
 let app = express();
 app.use(cors());

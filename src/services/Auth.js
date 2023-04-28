@@ -3,7 +3,7 @@ const db = require("../models");
 const saveRefreshToken = async (refreshToken)=>{
   try {
     const RFT = {RefreshToken: refreshToken};
-    const saveRFT = await db.refreshToken.create(RFT);
+    const saveRFT = await db.refreshtoken.create(RFT);
     return refreshToken;
   } catch (error) {
     return {error: error}
@@ -13,7 +13,7 @@ const saveRefreshToken = async (refreshToken)=>{
 const deleteRefreshToken = async (refreshToken) => {
   try {
     const RFT = {RefreshToken: refreshToken};
-    const del = await db.refreshToken.destroy(RFT);
+    const del = await db.refreshtoken.destroy(RFT);
     if (del != 1) {
       return false;
     } else {
@@ -26,7 +26,7 @@ const deleteRefreshToken = async (refreshToken) => {
 
 const refreshTokenExist = async (refreshToken) =>{
   try {
-    const RFT = await db.refreshToken.findAll({
+    const RFT = await db.refreshtoken.findAll({
       where: {
         RefreshToken: refreshToken
       }
@@ -42,8 +42,9 @@ const refreshTokenExist = async (refreshToken) =>{
 }
 
 const userExist = async ({username, password}) => {
+  console.log(username, password);
   try {
-    const userExist = await db.userAcc.findAll({
+    const userExist = await db.useracc.findAll({
       where: {
         UserName: username,
         Password: password

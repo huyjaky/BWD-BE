@@ -3,7 +3,7 @@ const {
   Model, STRING
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class refreshToken extends Model {
+  class refreshtoken extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,15 +12,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
     }
   }
-  refreshToken.init({
-    RefreshToken: DataTypes.STRING,
+  refreshtoken.init({
+    refreshtoken: DataTypes.STRING,
 
   }, {
     sequelize,
-    modelName: 'refreshToken',
+    modelName: 'refreshtoken',
     timestamps: false,
     tableName: 'RefreshToken',
   });
-  return refreshToken;
+  return refreshtoken;
 }
 

@@ -10,8 +10,10 @@ const Login = async (req, res) => {
   const data = req.body;
   const user = await Auth.userExist(req.body);
   // if user have error return
-  if (user?.error || !user)
+  if (user?.error || !user) {
+    console.log(user.error);
     return statusReturn(res, 500, "Something went wrong", user.error);
+  }
 
   const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "1h",

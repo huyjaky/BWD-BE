@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      house.hasOne(models.manageTypeHouse, {foreignKey: 'HouseId'});
-      house.hasOne(models.managePlaceOffer, {foreignKey: 'HouseId'});
-      house.hasOne(models.rentalPeriod, {foreignKey: 'HouseId'});
+      house.hasOne(models.managetypehouse, {foreignKey: 'HouseId'});
+      house.hasOne(models.manageplaceoffer, {foreignKey: 'HouseId'});
+      house.hasOne(models.rentalperiod, {foreignKey: 'HouseId'});
       house.hasOne(models.rate, {foreignKey: 'HouseId'});
 
       house.belongsTo(models.address, {foreignKey: 'AddressId'});
       house.belongsTo(models.judical, {foreignKey: 'JudicalId'});
-      house.belongsTo(models.userAcc, {foreignKey: 'PostBy', targetKey: 'UserId'});
+      house.belongsTo(models.useracc, {foreignKey: 'PostBy', targetKey: 'UserId'});
     }
   }
   house.init({

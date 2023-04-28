@@ -1,17 +1,11 @@
 const express = require('express');
 const multer = require('multer');
 const common = require('../controllers/common');
-const Auth = require('../controllers/Auth');
 const useAuth = require('../controllers/useAuth');
 
 let router = express.Router();
 
 let initRouter = (app) => {
-  // Auth Server
-  router.post('/api/login', Auth.Login);
-  router.post('/api/refresh', Auth.Refresh);
-  router.get('/api/logout', Auth.Logout);
-
   // API Server
 
   // getAPI
@@ -25,6 +19,7 @@ let initRouter = (app) => {
   // patchAPI: cap nhat mot phan cua doi tuong
 
   // postAPI
+  router.post('/api/create/:model', useAuth.verify, common.createData);
 
   // putAPI: thay doi toan bo doi tuong
 
