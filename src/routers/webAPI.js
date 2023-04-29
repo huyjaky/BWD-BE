@@ -20,6 +20,7 @@ let initRouter = (app) => {
 
   // postAPI
   router.post('/api/create/:model', useAuth.verify, common.createData);
+  router.post('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
   // putAPI: thay doi toan bo doi tuong
 

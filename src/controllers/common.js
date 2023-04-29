@@ -58,8 +58,23 @@ const createData = async (req, res) => {
       );
     }
 
-    return res.status(200).json({message: "Created!"});
+    return res.status(200).json({ message: "Created!" });
+  } catch (error) {
+    return statusReturn.statusReturn(res, 500, "Something went wrong", error);
+  }
+};
 
+const modifierData = async (req, res) => {
+  const data = req.body;
+  const id = req.params.id;
+  const model = req.params.model;
+  try {
+    const modifier = await ModelFunc.modifierData(db, data, model, id);
+
+    if (modifier?.error) {
+      return statusReturn.statusReturn(res, 500, "Something went wrong", modifier.error);
+    }
+    return res.status(200).json({message: 'Done'});
   } catch (error) {
     return statusReturn.statusReturn(res, 500, "Something went wrong", error);
   }
@@ -68,5 +83,6 @@ const createData = async (req, res) => {
 module.exports = {
   getData: getData,
   deleteData: deleteData,
-  createData: createData
+  createData: createData,
+  modifierData: modifierData,
 };
