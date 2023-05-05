@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const Auth = require("../services/Auth");
-const { statusReturn } = require("./statusReturn");
+const { statusReturn } = require("../untils/statusReturn");
 const moment = require("moment");
 
 dotenv.config();

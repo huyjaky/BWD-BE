@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const common = require('../controllers/common');
-const useAuth = require('../controllers/useAuth');
+const useAuth = require('../middlewares/useAuth');
 
 let router = express.Router();
 
