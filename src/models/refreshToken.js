@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   refreshtoken.init({
-    refreshtoken: DataTypes.STRING,
+    RefreshToken: DataTypes.STRING,
 
   }, {
     sequelize,

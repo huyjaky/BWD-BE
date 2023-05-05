@@ -17,12 +17,13 @@ let initRouter = (app) => {
   router.delete('/api/delete/:model', useAuth.verify, common.deleteData);
 
   // patchAPI: cap nhat mot phan cua doi tuong
+  router.patch('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
   // postAPI
   router.post('/api/create/:model', useAuth.verify, common.createData);
-  router.post('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
   // putAPI: thay doi toan bo doi tuong
+  router.put('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
 
   return app.use('/', router);

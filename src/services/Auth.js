@@ -4,6 +4,8 @@ const saveRefreshToken = async (refreshToken)=>{
   try {
     const RFT = {RefreshToken: refreshToken};
     const saveRFT = await db.refreshtoken.create(RFT);
+    console.log(saveRFT);
+
     return refreshToken;
   } catch (error) {
     return {error: error}
