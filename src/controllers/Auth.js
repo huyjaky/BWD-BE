@@ -25,12 +25,22 @@ const Login = async (req, res) => {
   if (refreshToken?.error)
     return statusReturn(res, 500, "Something went wrong", refreshToken.error);
 
-  const unixTime = Math.floor(new Date(Date.now()).getTime() + (60 * 60) / 1000);
+  // Lấy giá trị Unix timestamp hiện tại
+  const currentUnixTime = Math.floor(Date.now() / 1000);
+
+  // Chuyển đổi giá trị Unix timestamp thành đối tượng Date
+  const currentDate = new Date(currentUnixTime * 1000);
+
+  // Cộng 1 giờ vào giá trị Date hiện tại
+  currentDate.setHours(currentDate.getHours() + 1);
+
+  // Chuyển đổi lại thành giá trị Unix timestamp
+  const newUnixTime = Math.floor(currentDate.getTime() / 1000);
 
   return res.status(200).json({
     accessToken: accessToken,
     refreshToken: refreshToken,
-    expiresIn: unixTime * 1000,
+    expiresIn: newUnixTime * 1000,
     status: "Login successfully",
   });
 };
@@ -59,7 +69,9 @@ const Refresh = async (req, res) => {
     }
   );
 
-  const unixTime = Math.floor(new Date(Date.now()).getTime() + (60 * 60) / 1000);
+  const unixTime = Math.floor(
+    new Date(Date.now()).getTime() + (60 * 60) / 1000
+  );
 
   return res.status(200).json({
     accessToken: accessToken,

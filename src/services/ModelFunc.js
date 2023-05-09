@@ -7,7 +7,7 @@ const getModelData = async (db, models, conditions, page) => {
       let getAll;
       const pagination = {};
       if (page) {
-        const perPage = 10;
+        const perPage = 20;
         const offSet = (page - 1) * perPage;
         getAll = await db[models].findAll({
           limit: perPage,
@@ -21,6 +21,20 @@ const getModelData = async (db, models, conditions, page) => {
       return { data: getAll, pagination: pagination || null };
     }
   } catch (error) {
+    return { error };
+  }
+};
+
+const getModelDataCond = async (db, models, cond, value) => {
+  console.log(cond, value);
+  try {
+    const cond_ = await db[models].findOne({
+      where: { [cond]: value },
+    });
+    console.log(cond_);
+    return cond_;
+  } catch (error) {
+    console.log(error);
     return { error };
   }
 };
@@ -57,7 +71,6 @@ const modifierData = async (db, data, models, id) => {
       await entity.save();
       return true;
     }
-
   } catch (error) {
     console.log(error);
     return { error };
@@ -69,4 +82,5 @@ module.exports = {
   deleteModelData: deleteModelData,
   createModel: createModel,
   modifierData: modifierData,
+  getModelDataCond: getModelDataCond,
 };

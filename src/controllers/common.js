@@ -24,6 +24,28 @@ const getData = async (req, res) => {
   }
 };
 
+const getDataCondition = async (req, res) => {
+  const model = req.params.model;
+  const cond = req.params.cond;
+  const value = req.params.value;
+  try {
+    const getAll = await ModelFunc.getModelDataCond(db, model, cond, value);
+    if (getAll?.error) {
+      return statusReturn.statusReturn(
+        res,
+        500,
+        "Something went wrong",
+        getAll.error
+      );
+    }
+
+    return res.status(200).json(getAll);
+  } catch (error) {
+    console.log("check");
+    return statusReturn.statusReturn(res, 500, "Something went wrong", error);
+  }
+};
+
 const deleteData = async (req, res) => {
   const model = req.params.model;
   const cond = req.params.id;
@@ -72,9 +94,14 @@ const modifierData = async (req, res) => {
     const modifier = await ModelFunc.modifierData(db, data, model, id);
 
     if (modifier?.error) {
-      return statusReturn.statusReturn(res, 500, "Something went wrong", modifier.error);
+      return statusReturn.statusReturn(
+        res,
+        500,
+        "Something went wrong",
+        modifier.error
+      );
     }
-    return res.status(200).json({message: 'Done'});
+    return res.status(200).json({ message: "Done" });
   } catch (error) {
     return statusReturn.statusReturn(res, 500, "Something went wrong", error);
   }
@@ -85,4 +112,5 @@ module.exports = {
   deleteData: deleteData,
   createData: createData,
   modifierData: modifierData,
+  getDataCondition: getDataCondition
 };

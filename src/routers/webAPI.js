@@ -9,6 +9,7 @@ let initRouter = (app) => {
   // API Server
 
   // getAPI
+  router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
   router.get('/api/get/:model/:id', useAuth.verify, common.getData);
   router.get('/api/get/:model', useAuth.verify, common.getData);
 
