@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      address.belongsTo(models.district, {foreignKey: 'DistrictId'});
-      address.belongsTo(models.ward, {foreignKey: 'WardId'});
-
-      address.hasOne(models.house, {foreignKey: 'AddressId'});
     }
   }
   address.init({
@@ -23,14 +19,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true
     },
-    DistrictId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    WardId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    }
+    addressLine: DataTypes.STRING,
+    adminDistrict: DataTypes.STRING,
+    countryRegion: DataTypes.STRING,
+    formattedAddress: DataTypes.STRING,
+    locality: DataTypes.STRING,
+    latitude: DataTypes.STRING,
+    longitude: DataTypes.STRING
 
   }, {
     sequelize,

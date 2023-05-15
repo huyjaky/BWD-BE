@@ -16,7 +16,7 @@ const Login = async (req, res) => {
   }
 
   const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "1d",
   });
   const refreshToken = await Auth.saveRefreshToken(
     jwt.sign(data, process.env.REFRESH_TOKEN_SECRET)
@@ -65,7 +65,7 @@ const Refresh = async (req, res) => {
     { username: username, password: password },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "1h",
+      expiresIn: "1d",
     }
   );
 

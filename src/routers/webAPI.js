@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const common = require('../controllers/common');
 const useAuth = require('../middlewares/useAuth');
+const noneAuth = require('../controllers/noneAuth');
 
 let router = express.Router();
 
@@ -9,9 +10,14 @@ let initRouter = (app) => {
   // API Server
 
   // getAPI
+
+  router.get('/api/get/house', noneAuth.getHouse);
+  router.get('/api/get/house/:id', noneAuth.getHouse);
+
   router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
   router.get('/api/get/:model/:id', useAuth.verify, common.getData);
   router.get('/api/get/:model', useAuth.verify, common.getData);
+
 
   // deleteAPI
   router.delete('/api/delete/:model/:id', useAuth.verify, common.deleteData);
