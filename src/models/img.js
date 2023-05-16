@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   img.init({
-    ImgId: DataTypes.STRING,
-    Path: {
+    Path: DataTypes.STRING,
+    ImgId: {
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true

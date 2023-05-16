@@ -1,7 +1,7 @@
 const db = require("../models");
 const getHouseServices = async () => {
   try {
-    const getHouse_ = await db.house.findAll({
+    let getHouse_ = await db.house.findAll({
       include: [
         {
           model: db.address,
@@ -10,12 +10,48 @@ const getHouseServices = async () => {
         {
           model: db.useracc,
           required: true,
-          attributes: ['UserId', 'UserName', 'Gmail']
+          attributes: ["UserId", "UserName", "Gmail"],
         },
       ],
     });
-    return getHouse_;
+
+    let extendedHouse = await Promise.all(
+      getHouse_.map(async (item) => {
+        const arrImg = await handleFetchImg(item.HouseId);
+        return { ...item.toJSON(), arrImg };
+      })
+    );
+
+    return extendedHouse;
   } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
+
+const handleFetchImg = async (HouseId) => {
+  try {
+    let getHouseImg = await db.img.findAll({
+      attributes: ["Path"],
+      include: [
+        {
+          model: db.manageimg,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: db.house,
+              required: true,
+              where: { HouseId: HouseId },
+              attributes: [],
+            },
+          ],
+        },
+      ],
+    });
+    return getHouseImg;
+  } catch (error) {
+    console.log(error);
     return { error };
   }
 };

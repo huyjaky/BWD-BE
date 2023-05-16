@@ -2,6 +2,7 @@ const db = require("../models");
 const ModelFunc = require("../services/ModelFunc");
 const statusReturn = require("../untils/statusReturn");
 
+
 const getData = async (req, res) => {
   const model = req.params.model;
   const cond = req.params.id;

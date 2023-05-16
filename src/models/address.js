@@ -21,11 +21,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     addressLine: DataTypes.STRING,
     adminDistrict: DataTypes.STRING,
+    adminDistrict2: DataTypes.STRING,
+    countryRegionIso2: DataTypes.STRING,
+    houseNumber: DataTypes.STRING,
+    postalCode: DataTypes.STRING,
+    streetName: DataTypes.STRING,
     countryRegion: DataTypes.STRING,
     formattedAddress: DataTypes.STRING,
     locality: DataTypes.STRING,
     latitude: DataTypes.STRING,
-    longitude: DataTypes.STRING
+    longitude: DataTypes.STRING,
 
   }, {
     sequelize,
