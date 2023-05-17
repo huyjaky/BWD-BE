@@ -21,7 +21,7 @@ let initRouter = (app) => {
 
   // getAPI
 
-  router.get('/api/get/house/:_page', noneAuth.getHouse);
+  router.get('/api/get/house/page/:_page', noneAuth.getHouse);
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
 
   router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
