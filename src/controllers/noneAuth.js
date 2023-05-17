@@ -5,10 +5,12 @@ const getHouse_ = require("../services/getHouse_");
 const statusReturn = require("../untils/statusReturn");
 
 const getHouse = async (req, res) => {
-  const cond = req.params.id;
+  const page = req.params._page;
+  const id = req.params.id;
+  console.log(page, id);
 
   try {
-    const getAll = await getHouse_.getHouseServices();
+    const getAll = await getHouse_.getHouseServices(page, id);
     if (getAll?.error) {
       return statusReturn.statusReturn(
         res,

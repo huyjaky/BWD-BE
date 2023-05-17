@@ -1,6 +1,34 @@
 const db = require("../models");
-const getHouseServices = async () => {
+const getHouseServices = async (page, id) => {
   try {
+    if (id) {
+      let getHouse_ = await db.house.findAll({
+        where: {HouseId: id},
+        include: [
+          {
+            model: db.address,
+            required: true,
+          },
+          {
+            model: db.useracc,
+            required: true,
+            attributes: ["UserId", "UserName", "Gmail"],
+          },
+        ]
+      });
+
+      let extendedHouse = await Promise.all(
+        getHouse_.map(async (item) => {
+          const arrImg = await handleFetchImg(item.HouseId);
+          return { ...item.toJSON(), arrImg };
+        })
+      );
+      return extendedHouse;
+    }
+
+    const perPage = 20;
+    const offSet = (page - 1) * perPage;
+    console.log(page);
     let getHouse_ = await db.house.findAll({
       include: [
         {
@@ -13,6 +41,8 @@ const getHouseServices = async () => {
           attributes: ["UserId", "UserName", "Gmail"],
         },
       ],
+      limit: perPage,
+      offSet: offSet,
     });
 
     let extendedHouse = await Promise.all(
