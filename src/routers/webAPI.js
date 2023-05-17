@@ -7,14 +7,14 @@ const Img = require('../controllers/Img');
 
 let router = express.Router();
 
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 30, // giới hạn tải lên là 10MB
-    maxFiles: 80, // giới hạn số lượng file tối đa là 20
-    maxParallelUploads: 20, // tải đồng thời tối đa 10 file
-  }
-});
+// const upload = multer({
+//   storage: storage,
+//   limits: {
+//     fileSize: 1024 * 1024 * 30, // giới hạn tải lên là 10MB
+//     maxFiles: 80, // giới hạn số lượng file tối đa là 20
+//     maxParallelUploads: 20, // tải đồng thời tối đa 10 file
+//   }
+// });
 
 let initRouter = (app) => {
   // API Server
