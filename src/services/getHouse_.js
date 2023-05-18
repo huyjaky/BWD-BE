@@ -26,7 +26,7 @@ const getHouseServices = async (page, id) => {
       return extendedHouse;
     }
 
-    const perPage = 20;
+    const perPage = 6;
     const offSet = (page - 1) * perPage;
     console.log(page);
     let getHouse_ = await db.house.findAll({
@@ -42,7 +42,7 @@ const getHouseServices = async (page, id) => {
         },
       ],
       limit: perPage,
-      offSet: offSet,
+      offset: offSet,
     });
 
     let extendedHouse = await Promise.all(
