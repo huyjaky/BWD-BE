@@ -20,9 +20,9 @@ let initRouter = (app) => {
   // API Server
 
   // getAPI
-
   router.get('/api/get/house/page/:_page', noneAuth.getHouse);
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
+
 
   router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
   router.get('/api/get/:model/:id', useAuth.verify, common.getData);
@@ -38,6 +38,8 @@ let initRouter = (app) => {
 
   // postAPI
   router.post('/api/create/:model', useAuth.verify, common.createData);
+  router.post('/api/get/house/filter', noneAuth.Filter);
+
 
   // putAPI: thay doi toan bo doi tuong
   router.put('/api/modifier/:model/:id', useAuth.verify, common.modifierData);

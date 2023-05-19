@@ -1,6 +1,7 @@
 
 const db = require("../models");
 const ModelFunc = require("../services/ModelFunc");
+const { FilterService } = require("../services/filter");
 const getHouse_ = require("../services/getHouse_");
 const statusReturn = require("../untils/statusReturn");
 
@@ -26,6 +27,17 @@ const getHouse = async (req, res) => {
   }
 }
 
+const Filter = async (req, res) =>{
+  try {
+    const val = req.body;
+    const fil = await FilterService(val);
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
-  getHouse: getHouse
+  getHouse: getHouse,
+  Filter: Filter
 }
