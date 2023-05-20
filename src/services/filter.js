@@ -1,6 +1,5 @@
 const { Op } = require("sequelize");
 const db = require("../models");
-ujnnlkjoujnljlk
 const FilterService = async ({
   amenities,
   bathRooms,
@@ -9,44 +8,69 @@ const FilterService = async ({
   maxPrice,
   minPrice,
   typeHouse,
-}) => {
+}, page) => {
   const { essentials, features, location, safety } = amenities;
   const arrFil = [...essentials, ...features, ...location, ...safety];
   const filter = {};
-  if (arrFil.length != 0) {
-    filter.amenities = {TypeHouse: {[Op.in]: arrFil}};
-  }
 
   if (bathRooms != 0) {
-    filter.bathRooms = {NumsOfBath: bathRooms};
+    filter.bathRooms = { NumsOfBath: bathRooms };
   }
 
   if (beds != 0) {
-    filter.beds = {NumsOfBed: beds};
+    filter.beds = { NumsOfBed: beds };
   }
 
   if (hostLanguage) {
-    filter.hostLanguage = {HostLanguage: hostLanguage};
+    filter.hostLanguage = { HostLanguage: hostLanguage };
   }
 
-  filter.price = {Price: {[Op.between]: [minPrice, maxPrice]}}
-;
-
   if (typeHouse.length != 0) {
-    filter.typeHouse = typeHouse;
+    filter.typeHouse = { TypeHouse: { [Op.in]: typeHouse } };
+  }
+
+  filter.price = { Price: { [Op.between]: [minPrice, maxPrice] } };
+
+  if (arrFil.length != 0) {
+    filter.amenities = {PlaceOffer: {[Op.in]: arrFil}};
   }
 
   try {
     const perPage = 10;
-    const offSet = (1 - 1) * perPage;
-    let getHouse_ = await db.house.findAll({
-      where:{[Op.and]: [
-        filter.beds,
-        filter.bathRooms,
-        filter.hostLanguage,
-        filter.price
-      ]},
+    const offSet = (page - 1) * perPage;
+
+    const getHouse_ = await db.house.findAll({
+      where: {
+        [Op.and]: [
+          filter.beds,
+          filter.bathRooms,
+          filter.hostLanguage,
+          filter.price,
+        ],
+      },
       include: [
+        {
+          model: db.managetypehouse,
+          required: true,
+          include: [
+            {
+              model: db.typehouse,
+              required: true,
+              where: { [Op.and]: [filter.typeHouse] },
+            },
+          ],
+        },
+        {
+          model: db.manageplaceoffer,
+          required: true,
+          include: [
+            {
+              model: db.placeoffer,
+              required: true,
+              where: { [Op.and]: [filter.amenities]}
+            }
+          ]
+        },
         {
           model: db.address,
           required: true,
@@ -56,30 +80,20 @@ const FilterService = async ({
           required: true,
           attributes: ["UserId", "UserName", "Gmail"],
         },
-        {
-          model: db.managetypehouse,
-          required: true,
-          include: [
-            {
-              model: db.typehouse,
-            }
-          ]
-        }
       ],
       limit: perPage,
-      offset: offSet,
+      offset: offSet
     });
 
-    console.log('gethouse: ', getHouse_);
+    console.log(getHouse_);
+    let extendedHouse = await Promise.all(
+      getHouse_.map(async (item) => {
+        const arrImg = await handleFetchImg(item.HouseId);
+        return { ...item.toJSON(), arrImg };
+      })
+    );
 
-    // let extendedHouse = await Promise.all(
-    //   getHouse_.map(async (item) => {
-    //     const arrImg = await handleFetchImg(item.HouseId);
-    //     return { ...item.toJSON(), arrImg };
-    //   })
-    // );
-
-    // return extendedHouse;
+    return extendedHouse;
   } catch (error) {
     console.log(error);
     return { error };

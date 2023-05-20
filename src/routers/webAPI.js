@@ -38,7 +38,7 @@ let initRouter = (app) => {
 
   // postAPI
   router.post('/api/create/:model', useAuth.verify, common.createData);
-  router.post('/api/get/house/filter', noneAuth.Filter);
+  router.post('/api/get/house/filter/:_page', noneAuth.Filter);
 
 
   // putAPI: thay doi toan bo doi tuong

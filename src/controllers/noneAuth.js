@@ -30,7 +30,8 @@ const getHouse = async (req, res) => {
 const Filter = async (req, res) =>{
   try {
     const val = req.body;
-    const fil = await FilterService(val);
+    const page= req.params._page
+    const fil = await FilterService(val, page);
 
   } catch (error) {
     console.log(error);
