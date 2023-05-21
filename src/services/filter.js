@@ -33,7 +33,7 @@ const FilterService = async (
         {
           model: db.typehouse,
           required: true,
-          where: { [Op.and]: [{ [Op.in]: filter.typeHouse }] },
+          where: { TypeHouse: {[Op.in]: typeHouse} },
         },
       ],
     };
@@ -48,13 +48,13 @@ const FilterService = async (
         {
           model: db.placeoffer,
           required: true,
-          where: { [Op.and]: [filter.amenities] },
+          where: { PlaceOffer: {[Op.in]: arrFil} },
         },
       ],
     };
   }
 
-  // dinh nghia include va push nhung filter can thiet 
+  // dinh nghia include va push nhung filter can thiet
   const include = [
     {
       model: db.address,
@@ -69,9 +69,10 @@ const FilterService = async (
   if (filter.amenities) include.push(filter.amenities);
   if (filter.typeHouse) include.push(filter.typeHouse);
 
-
   const perPage = 10;
   const offSet = (page - 1) * perPage;
+
+  console.log(include);
 
   try {
     const getHouse_ = await db.house.findAll({

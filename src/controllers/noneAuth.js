@@ -32,6 +32,7 @@ const Filter = async (req, res) =>{
     const val = req.body;
     const page= req.params._page
     const fil = await FilterService(val, page);
+
     if (fil?.error) {
       return statusReturn.statusReturn(
         res,
