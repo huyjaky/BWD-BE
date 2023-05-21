@@ -31,7 +31,7 @@ const Filter = async (req, res) =>{
   try {
     const val = req.body;
     const page= req.params._page
-    const fil = await FilterService(val, page);
+    const fil = await FilterService(val.filter, val.selectPlace, page);
 
     if (fil?.error) {
       return statusReturn.statusReturn(
