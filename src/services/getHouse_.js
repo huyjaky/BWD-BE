@@ -3,7 +3,7 @@ const getHouseServices = async (page, id) => {
   try {
     if (id) {
       let getHouse_ = await db.house.findAll({
-        where: {HouseId: id},
+        where: { HouseId: id },
         include: [
           {
             model: db.address,
@@ -14,7 +14,31 @@ const getHouseServices = async (page, id) => {
             required: true,
             attributes: ["UserId", "UserName", "Gmail"],
           },
-        ]
+        ],
+      });
+
+      let extendedHouse = await Promise.all(
+        getHouse_.map(async (item) => {
+          const arrImg = await handleFetchImg(item.HouseId);
+          return { ...item.toJSON(), arrImg };
+        })
+      );
+      return extendedHouse;
+    }
+
+    if (!page) {
+      let getHouse_ = await db.house.findAll({
+        include: [
+          {
+            model: db.address,
+            required: true,
+          },
+          {
+            model: db.useracc,
+            required: true,
+            attributes: ["UserId", "UserName", "Gmail"],
+          },
+        ],
       });
 
       let extendedHouse = await Promise.all(
