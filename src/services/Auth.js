@@ -46,16 +46,16 @@ const refreshTokenExist = async (refreshToken) =>{
 const userExist = async ({username, password}) => {
   console.log(username, password);
   try {
-    const userExist = await db.useracc.findAll({
+    const userExist = await db.useracc.findOne({
       where: {
         UserName: username,
         Password: password
       }
     })
-    if (userExist.length == 0) {
-      return false;
+    if (userExist) {
+      return userExist;
     } else {
-      return true;
+      return false;
     }
 
   } catch (error) {

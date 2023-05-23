@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const Auth = require("../services/Auth");
 const { statusReturn } = require("../untils/statusReturn");
 const moment = require("moment");
+const db = require("../models");
 
 dotenv.config();
 
@@ -10,9 +11,9 @@ const Login = async (req, res) => {
   const data = req.body;
   const user = await Auth.userExist(req.body);
   // if user have error return
-  if (user?.error || !user) {
+  if (user?.error || user == false) {
     console.log(user.error);
-    return statusReturn(res, 500, "Something went wrong", user.error);
+    return statusReturn(res, 500, "Something went wrong 1", user.error);
   }
 
   const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, {
@@ -23,25 +24,15 @@ const Login = async (req, res) => {
   );
   // if save refreshToken in dtb have error return
   if (refreshToken?.error)
-    return statusReturn(res, 500, "Something went wrong", refreshToken.error);
-
-  // Lấy giá trị Unix timestamp hiện tại
-  const currentUnixTime = Math.floor(Date.now() / 1000);
-
-  // Chuyển đổi giá trị Unix timestamp thành đối tượng Date
-  const currentDate = new Date(currentUnixTime * 1000);
-
-  // Cộng 1 giờ vào giá trị Date hiện tại
-  currentDate.setHours(currentDate.getHours() + 1);
-
-  // Chuyển đổi lại thành giá trị Unix timestamp
-  const newUnixTime = Math.floor(currentDate.getTime() / 1000);
+    return statusReturn(res, 500, "Something went wrong 2", refreshToken.error);
 
   return res.status(200).json({
-    accessToken: accessToken,
-    refreshToken: refreshToken,
-    expiresIn: newUnixTime * 1000,
-    status: "Login successfully",
+    userAcc: user,
+    token: {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      status: "Login successfully",
+    }
   });
 };
 
@@ -69,14 +60,9 @@ const Refresh = async (req, res) => {
     }
   );
 
-  const unixTime = Math.floor(
-    new Date(Date.now()).getTime() + (60 * 60) / 1000
-  );
-
   return res.status(200).json({
     accessToken: accessToken,
     refreshToken: refreshToken,
-    expiresIn: unixTime * 1000,
     status: "Refresh Successfully",
   });
 };
