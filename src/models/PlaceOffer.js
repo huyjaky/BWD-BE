@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true
-    }
+    },
+    PathIcon: DataTypes.STRING
 
   }, {
     sequelize,

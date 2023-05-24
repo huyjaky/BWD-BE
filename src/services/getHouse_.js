@@ -12,7 +12,7 @@ const getHouseServices = async (page, id) => {
           {
             model: db.useracc,
             required: true,
-            attributes: ["UserId", "UserName", "Gmail"],
+            attributes: ["UserId", "UserName", "Gmail", "Image"],
           },
         ],
       });
@@ -36,7 +36,7 @@ const getHouseServices = async (page, id) => {
           {
             model: db.useracc,
             required: true,
-            attributes: ["UserId", "UserName", "Gmail"],
+            attributes: ["UserId", "UserName", "Gmail", "Image"],
           },
         ],
       });
@@ -62,7 +62,7 @@ const getHouseServices = async (page, id) => {
         {
           model: db.useracc,
           required: true,
-          attributes: ["UserId", "UserName", "Gmail"],
+          attributes: ["UserId", "UserName", "Gmail", "Image"],
         },
       ],
       limit: perPage,
