@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   placeoffer.init({
-    placeoffer: DataTypes.STRING,
+    PlaceOffer: DataTypes.STRING,
 
     // primary key
     PlaceOfferId: {
