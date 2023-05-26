@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       useracc.hasOne(models.house, {foreignKey: 'PostBy'});
       useracc.hasOne(models.rentalperiod, {foreignKey: 'UserId'})
       useracc.hasOne(models.rate, {foreignKey: 'UserId'})
-
+      useracc.hasOne(models.favorite, {foreignKey: 'UserId'})
     }
   }
   useracc.init({

@@ -31,8 +31,8 @@ let initRouter = (app) => {
   router.get('/api/img/path/*', Img.getImage);
 
   // deleteAPI
-  router.delete('/api/delete/:model/:id', useAuth.verify, common.deleteData);
-  router.delete('/api/delete/:model', useAuth.verify, common.deleteData);
+  router.post('/api/delete/:model/:id', useAuth.verify, common.deleteData);
+  router.post('/api/delete/:model', useAuth.verify, common.deleteData);
 
   // patchAPI: cap nhat mot phan cua doi tuong
   router.patch('/api/modifier/:model/:id', useAuth.verify, common.modifierData);

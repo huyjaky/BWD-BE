@@ -49,9 +49,9 @@ const getDataCondition = async (req, res) => {
 
 const deleteData = async (req, res) => {
   const model = req.params.model;
-  const cond = req.params.id;
+
   try {
-    const deleteAll = await ModelFunc.deleteModelData(db, model, cond);
+    const deleteAll = await ModelFunc.deleteModelData(db, model, req.body);
 
     if (deleteAll?.error) {
       return statusReturn.statusReturn(
@@ -91,6 +91,7 @@ const modifierData = async (req, res) => {
   const data = req.body;
   const id = req.params.id;
   const model = req.params.model;
+  console.log('come');
   try {
     const modifier = await ModelFunc.modifierData(db, data, model, id);
 

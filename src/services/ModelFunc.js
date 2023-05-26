@@ -39,16 +39,12 @@ const getModelDataCond = async (db, models, cond, value) => {
   }
 };
 
-const deleteModelData = async (db, models, conditions) => {
+const deleteModelData = async (db, models, data) => {
   try {
-    if (conditions) {
-      const cond = await db[models].findByPk(conditions);
-      await cond.destroy();
-    } else {
-      const deleteAllData = await db[models].destroy({ where: {} });
-      return deleteAllData;
-    }
+    const deleteAllData = await db[models].destroy({ where: data });
+    return deleteAllData;
   } catch (error) {
+    console.log(error);
     return { error };
   }
 };
