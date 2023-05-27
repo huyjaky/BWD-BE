@@ -20,11 +20,20 @@ const FilterService = async (
     longitude,
   } = address;
 
+  const {
+    adults,
+    childrens,
+    infants
+  } = guest;
 
   // gop cac mang ammenties neu no ton tai
   const { essentials, features, location, safety } = amenities;
   const arrFil = [...essentials, ...features, ...location, ...safety];
   const filter = {};
+
+  if (adults != 0 || childrens != 0 || infants != 0) {
+    filter.beds = { NumsOfBed: { [Op.lte]: adults+childrens-1 } }
+  }
 
   if (bathRooms != 0) {
     filter.bathRooms = { NumsOfBath: bathRooms };
@@ -84,7 +93,7 @@ const FilterService = async (
       model: db.address,
       required: true,
       where: {
-        [Op.and] : [
+        [Op.and]: [
           {
             formattedAddress: {
               [Op.like]: `%${formattedAddress}%`
@@ -105,6 +114,8 @@ const FilterService = async (
 
   const perPage = 10;
   const offSet = (page - 1) * perPage;
+
+  console.log(filter.beds);
 
   try {
     const getHouse_ = await db.house.findAll({
