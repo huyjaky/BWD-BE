@@ -76,7 +76,7 @@ const FilterService = async (
     {
       model: db.useracc,
       required: true,
-      attributes: ["UserId", "UserName", "Gmail"],
+      attributes: ["UserId", "UserName", "Gmail", "Image"],
     },
   ];
   if (formattedAddress) {
@@ -121,15 +121,41 @@ const FilterService = async (
       offset: offSet,
     });
 
-    console.log(getHouse_);
     let extendedHouse = await Promise.all(
       getHouse_.map(async (item) => {
         const arrImg = await handleFetchImg(item.HouseId);
-        return { ...item.toJSON(), arrImg };
+        const placeOffer = await handleFetchPlaceOffer(item.HouseId);
+        return { ...item.toJSON(), arrImg, placeOffer };
       })
     );
 
     return extendedHouse;
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
+
+const handleFetchPlaceOffer = async (HouseId) => {
+  try {
+    let getHousePlaceOffer = await db.placeoffer.findAll({
+      include: [
+        {
+          model: db.manageplaceoffer,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: db.house,
+              required: true,
+              where: { HouseId: HouseId },
+              attributes: [],
+            },
+          ],
+        },
+      ],
+    });
+    return getHousePlaceOffer;
   } catch (error) {
     console.log(error);
     return { error };
