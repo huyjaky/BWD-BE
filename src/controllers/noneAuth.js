@@ -8,10 +8,10 @@ const statusReturn = require("../untils/statusReturn");
 const getHouse = async (req, res) => {
   const page = req.params._page;
   const id = req.params.id;
-  console.log(page, id);
+  const UserId = req.query.userid;
 
   try {
-    const getAll = await getHouse_.getHouseServices(page, id);
+    const getAll = await getHouse_.getHouseServices(page, id, UserId);
     if (getAll?.error) {
       return statusReturn.statusReturn(
         res,
@@ -31,7 +31,7 @@ const Filter = async (req, res) =>{
   try {
     const val = req.body;
     const page= req.params._page
-    const fil = await FilterService(val.filter, val.selectPlace, page);
+    const fil = await FilterService(val.datafil.filter, val.datafil.selectPlace, page, val.UserId);
 
     if (fil?.error) {
       return statusReturn.statusReturn(

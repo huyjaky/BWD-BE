@@ -3,7 +3,7 @@ const db = require("../models");
 const FilterService = async (
   { amenities, bathRooms, beds, hostLanguage, maxPrice, minPrice, typeHouse },
   { address, checkInDay, checkOutDay, guest },
-  page
+  page, UserId
 ) => {
   const {
     countryRegion,
@@ -136,7 +136,11 @@ const FilterService = async (
       getHouse_.map(async (item) => {
         const arrImg = await handleFetchImg(item.HouseId);
         const placeOffer = await handleFetchPlaceOffer(item.HouseId);
-        return { ...item.toJSON(), arrImg, placeOffer };
+        if (UserId) {
+          const setIsFavorite = await handleFavorite(item.HouseId, UserId);
+          return { ...item.toJSON(), arrImg, placeOffer, IsFavorite:  setIsFavorite};
+        }
+        return {...item.toJSON(), arrImg, placeOffer }
       })
     );
 
@@ -146,6 +150,27 @@ const FilterService = async (
     return { error };
   }
 };
+
+const handleFavorite = async (HouseId, UserId) => {
+  try {
+    let isFavorite = await db.favorite.findAll({
+      where: {
+        [Op.and]: [
+          {HouseId: HouseId},
+          {UserId: UserId}
+        ]
+      }
+    })
+    if (isFavorite.length != 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
 
 const handleFetchPlaceOffer = async (HouseId) => {
   try {

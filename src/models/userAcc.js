@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       useracc.hasOne(models.house, {foreignKey: 'PostBy'});
-      useracc.hasOne(models.rentalperiod, {foreignKey: 'UserId'})
       useracc.hasOne(models.rate, {foreignKey: 'UserId'})
       useracc.hasOne(models.favorite, {foreignKey: 'UserId'})
+      useracc.hasOne(models.schedule, {foreignKey: 'UserId'})
     }
   }
   useracc.init({

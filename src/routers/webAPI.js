@@ -4,6 +4,8 @@ const common = require('../controllers/common');
 const useAuth = require('../middlewares/useAuth');
 const noneAuth = require('../controllers/noneAuth');
 const Img = require('../controllers/Img');
+const confirm = require('../controllers/confirm');
+const listHouse = require('../controllers/listHouse');
 
 let router = express.Router();
 
@@ -23,6 +25,7 @@ let initRouter = (app) => {
   router.get('/api/get/house/page/:_page', noneAuth.getHouse);
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
   router.get('/api/get/house/page/', noneAuth.getHouse);
+  router.get('/api/get/house/userid/:userid', useAuth.verify,listHouse.getHouseUser);
 
 
   router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
@@ -38,6 +41,7 @@ let initRouter = (app) => {
   router.patch('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
   // postAPI
+  router.post('/api/create/schedule', useAuth.verify, confirm.confirm)
   router.post('/api/create/:model', useAuth.verify, common.createData);
   router.post('/api/get/house/filter/:_page', noneAuth.Filter);
 

@@ -12,9 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       house.hasOne(models.managetypehouse, {foreignKey: 'HouseId'});
       house.hasOne(models.manageplaceoffer, {foreignKey: 'HouseId'});
-      house.hasOne(models.rentalperiod, {foreignKey: 'HouseId'});
       house.hasOne(models.rate, {foreignKey: 'HouseId'});
       house.hasOne(models.favorite, {foreignKey: 'HouseId'});
+      house.hasOne(models.schedule, {foreignKey: 'HouseId'});
 
       house.hasOne(models.manageimg, {foreignKey: 'HouseId'});
 
