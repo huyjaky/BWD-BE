@@ -28,7 +28,7 @@ const getHouseServices = async (page, id, UserId) => {
       attr = { ...attr, limit: perPage_, offset: offSet_, }
     }
 
-    let getHouse_ = await db.house.findAll({...attr});
+    let getHouse_ = await db.house.findAll({ ...attr });
 
     let extendedHouse = await Promise.all(
       getHouse_.map(async (item) => {
@@ -36,9 +36,9 @@ const getHouseServices = async (page, id, UserId) => {
         const placeOffer = await handleFetchPlaceOffer(item.HouseId);
         if (UserId) {
           const setIsFavorite = await handleFavorite(item.HouseId, UserId);
-          return { ...item.toJSON(), arrImg, placeOffer, IsFavorite:  setIsFavorite};
+          return { ...item.toJSON(), arrImg, placeOffer, IsFavorite: setIsFavorite };
         }
-        return {...item.toJSON(), arrImg, placeOffer }
+        return { ...item.toJSON(), arrImg, placeOffer }
       })
     );
     return extendedHouse;
@@ -50,7 +50,9 @@ const getHouseServices = async (page, id, UserId) => {
   }
 };
 
-const getHouseUser= async (UserId) => {
+
+
+const getHouseUser = async (UserId) => {
   try {
     let attr = {}
     attr = {
@@ -63,18 +65,18 @@ const getHouseUser= async (UserId) => {
           model: db.useracc,
           required: true,
           attributes: ["UserId", "UserName", "Gmail", "Image"],
-          where: {UserId: UserId}
+          where: { UserId: UserId }
         },
       ]
     }
 
-    let getHouse_ = await db.house.findAll({...attr});
+    let getHouse_ = await db.house.findAll({ ...attr });
 
     let extendedHouse = await Promise.all(
       getHouse_.map(async (item) => {
         const arrImg = await handleFetchImg(item.HouseId);
         const placeOffer = await handleFetchPlaceOffer(item.HouseId);
-        return {...item.toJSON(), arrImg, placeOffer }
+        return { ...item.toJSON(), arrImg, placeOffer }
       })
     );
     return extendedHouse;
@@ -86,13 +88,51 @@ const getHouseUser= async (UserId) => {
   }
 };
 
+const getHouseFavoriteServices = async (UserId) => {
+  try {
+    let attr = {}
+    attr = {
+      ...attr, include: [
+        {
+          model: db.address,
+          required: true,
+        },
+        {
+          model: db.useracc,
+          required: true,
+          attributes: ["UserId", "UserName", "Gmail", "Image"],
+        },
+      ]
+    }
+
+    let getHouse_ = await db.house.findAll({ ...attr });
+    let extendedHouse = await Promise.all(
+      getHouse_.map(async (item) => {
+        const arrImg = await handleFetchImg(item.HouseId);
+        const placeOffer = await handleFetchPlaceOffer(item.HouseId);
+        const setIsFavorite = await handleFavorite(item.HouseId, UserId);
+        return { ...item.toJSON(), arrImg, placeOffer, IsFavorite: setIsFavorite };
+      })
+    );
+
+    let extendedHouse_ = extendedHouse.filter((item) => {
+      return item.IsFavorite !== false;
+    });
+
+    return extendedHouse_;
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+}
+
 const handleFavorite = async (HouseId, UserId) => {
   try {
     let isFavorite = await db.favorite.findAll({
       where: {
         [Op.and]: [
-          {HouseId: HouseId},
-          {UserId: UserId}
+          { HouseId: HouseId },
+          { UserId: UserId }
         ]
       }
     })
@@ -162,5 +202,6 @@ const handleFetchPlaceOffer = async (HouseId) => {
 
 module.exports = {
   getHouseServices: getHouseServices,
-  getHouseUser: getHouseUser
+  getHouseUser: getHouseUser,
+  getHouseFavoriteServices: getHouseFavoriteServices
 };

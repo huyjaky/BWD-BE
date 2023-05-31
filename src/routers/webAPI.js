@@ -25,7 +25,8 @@ let initRouter = (app) => {
   router.get('/api/get/house/page/:_page', noneAuth.getHouse);
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
   router.get('/api/get/house/page/', noneAuth.getHouse);
-  router.get('/api/get/house/userid/:userid', useAuth.verify,listHouse.getHouseUser);
+  router.get('/api/get/house/userid/favorite/:userid', useAuth.verify, listHouse.getHouseUserFavorite);
+  router.get('/api/get/house/userid/:userid', useAuth.verify, listHouse.getHouseUser);
 
 
   router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
