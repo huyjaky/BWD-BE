@@ -3,7 +3,7 @@ const statusReturn = require("../untils/statusReturn");
 
 const getHouseUser = async (req, res) => {
   const userId = req.params.userid;
-
+  
   try {
     const getHouse = await getHouse_.getHouseUser(userId);
     if (getHouse.error) {

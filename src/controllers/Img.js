@@ -1,10 +1,11 @@
+const path = require('path');
 const getImage = async (req, res) => {
   try {
-    const imagePath = path.join(__dirname, '../../', req.params[0] ); // đường dẫn tới file ảnh
+    // I:\BWD\BWD-BE\src\private\images\icons
+    const imagePath = path.join(__dirname, '../private/images', req.params[0] ); // đường dẫn tới file ảnh
     return res.sendFile(imagePath);
   } catch (error) {
     console.log(error);
-    console.log('sua loi');
     return res.json(error);
   }
 }

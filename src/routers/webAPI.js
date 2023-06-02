@@ -6,17 +6,18 @@ const noneAuth = require('../controllers/noneAuth');
 const Img = require('../controllers/Img');
 const confirm = require('../controllers/confirm');
 const listHouse = require('../controllers/listHouse');
+const storage = require('../config/imgConfig');
 
 let router = express.Router();
 
-// const upload = multer({
-//   storage: storage,
-//   limits: {
-//     fileSize: 1024 * 1024 * 30, // giới hạn tải lên là 10MB
-//     maxFiles: 80, // giới hạn số lượng file tối đa là 20
-//     maxParallelUploads: 20, // tải đồng thời tối đa 10 file
-//   }
-// });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 30, // giới hạn tải lên là 10MB
+    maxFiles: 80, // giới hạn số lượng file tối đa là 20
+    maxParallelUploads: 20, // tải đồng thời tối đa 10 file
+  }
+});
 
 let initRouter = (app) => {
   // API Server
