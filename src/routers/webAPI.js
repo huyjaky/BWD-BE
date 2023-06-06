@@ -7,6 +7,7 @@ const Img = require('../controllers/Img');
 const confirm = require('../controllers/confirm');
 const listHouse = require('../controllers/listHouse');
 const storage = require('../config/imgConfig');
+const postImg = require('../controllers/postImg');
 
 let router = express.Router();
 
@@ -46,6 +47,7 @@ let initRouter = (app) => {
   router.post('/api/create/schedule', useAuth.verify, confirm.confirm)
   router.post('/api/create/:model', useAuth.verify, common.createData);
   router.post('/api/get/house/filter/:_page', noneAuth.Filter);
+  router.post('/api/post/img', upload.array('files'), postImg.postImg);
 
 
   // putAPI: thay doi toan bo doi tuong

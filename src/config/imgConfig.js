@@ -3,7 +3,7 @@ const {v4: uuidv4} = require('uuid');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'src/private/img')
+    cb(null, 'src/private/images/homes')
   },
   filename: function (req, file, cb) {
     const uuid = Date.now() + '-' + uuidv4();
