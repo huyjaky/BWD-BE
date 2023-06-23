@@ -34,7 +34,7 @@ let initRouter = (app) => {
   router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
   router.get('/api/get/:model/:id', useAuth.verify, common.getData);
   router.get('/api/get/:model', useAuth.verify, common.getData);
-  router.get('/api/img/path/*', useAuth.verify, Img.getImage);
+  router.get('/api/img/path/*', Img.getImage);
 
   // deleteAPI
   router.post('/api/delete/img', useAuth.verify, Img.deleteImg);
