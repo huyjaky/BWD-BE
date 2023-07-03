@@ -27,7 +27,17 @@ let initRouter = (app) => {
   router.get('/api/get/house/page/:_page', noneAuth.getHouse);
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
   router.get('/api/get/house/page/', noneAuth.getHouse);
-  router.get('/api/get/house/userid/favorite/:userid', useAuth.verify, listHouse.getHouseUserFavorite);
+
+  // nha yeu thich
+  router.post('/api/get/house/userid/favorite/:userid', useAuth.verify,listHouse.getHouseUserFavorite);
+  // nha co nhieu luot xem nhat
+  router.get('')
+
+  //nha o quan son tran
+
+  // mua nha
+
+
   router.get('/api/get/house/userid/:userid', useAuth.verify, listHouse.getHouseUser);
 
 

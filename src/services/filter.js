@@ -32,7 +32,7 @@ const FilterService = async (
   const filter = {};
 
   if (adults != 0 || childrens != 0 || infants != 0) {
-    filter.beds = { NumsOfBed: { [Op.lte]: adults+childrens-1 } }
+    filter.beds = { NumsOfBed: { [Op.lte]: adults + childrens - 1 } }
   }
 
   if (bathRooms != 0) {
@@ -112,10 +112,8 @@ const FilterService = async (
   if (filter.amenities) include.push(filter.amenities);
   if (filter.typeHouse) include.push(filter.typeHouse);
 
-  const perPage = 10;
-  const offSet = (page - 1) * perPage;
-
-  console.log(filter.beds);
+  const perPage = page == -1 ? 6 : 10;
+  const offSet = page == -1 ? 0 : (page - 1) * perPage;
 
   try {
     const getHouse_ = await db.house.findAll({
@@ -138,9 +136,9 @@ const FilterService = async (
         const placeOffer = await handleFetchPlaceOffer(item.HouseId);
         if (UserId) {
           const setIsFavorite = await handleFavorite(item.HouseId, UserId);
-          return { ...item.toJSON(), arrImg, placeOffer, IsFavorite:  setIsFavorite};
+          return { ...item.toJSON(), arrImg, placeOffer, IsFavorite: setIsFavorite };
         }
-        return {...item.toJSON(), arrImg, placeOffer }
+        return { ...item.toJSON(), arrImg, placeOffer }
       })
     );
 
@@ -153,11 +151,13 @@ const FilterService = async (
 
 const handleFavorite = async (HouseId, UserId) => {
   try {
+
+
     let isFavorite = await db.favorite.findAll({
       where: {
         [Op.and]: [
-          {HouseId: HouseId},
-          {UserId: UserId}
+          { HouseId: HouseId },
+          { UserId: UserId }
         ]
       }
     })

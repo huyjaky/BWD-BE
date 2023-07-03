@@ -3,7 +3,7 @@ const statusReturn = require("../untils/statusReturn");
 
 const getHouseUser = async (req, res) => {
   const userId = req.params.userid;
-  
+
   try {
     const getHouse = await getHouse_.getHouseUser(userId);
     if (getHouse.error) {
@@ -18,15 +18,16 @@ const getHouseUser = async (req, res) => {
 
 const getHouseUserFavorite = async (req, res) => {
   const userId = req.params.userid;
+  const limit = req.body.offset;
 
   try {
-    const getHouse = await getHouse_.getHouseFavoriteServices(userId);
+    const getHouse = await getHouse_.getHouseFavoriteServices(userId, limit);
     if (getHouse.error) {
       return statusReturn.statusReturn(res, 500, "Something went wrong", error);
     }
     return res.status(200).json(getHouse)
   } catch (error) {
-    console.log("check");
+    console.log(error);
     return statusReturn.statusReturn(res, 500, "Something went wrong", error);
   }
 }

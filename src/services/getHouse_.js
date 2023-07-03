@@ -88,32 +88,41 @@ const getHouseUser = async (UserId) => {
   }
 };
 
-const getHouseFavoriteServices = async (UserId) => {
+const getHouseFavoriteServices = async (UserId, offset) => {
   try {
-    let attr = {}
-    attr = {
-      ...attr, include: [
-        {
-          model: db.address,
-          required: true,
-        },
-        {
-          model: db.useracc,
-          required: true,
-          attributes: ["UserId", "UserName", "Gmail", "Image"],
-        },
-      ]
-    }
 
-    let getHouse_ = await db.house.findAll({ ...attr });
+    let offSet_ = 0;
+    let limit_ = 9999;
+    if (offset === -1) limit_ = 7;
+
+    let getHouse_ = await db.favorite.findAll({
+      where: {
+        [Op.and]: [
+          {UserId: UserId}
+        ],
+      },
+      include: [
+        {
+          model: db.house,
+          required: true
+        }
+      ],
+      offset: offSet_,
+      limit: limit_
+    });
+
     let extendedHouse = await Promise.all(
       getHouse_.map(async (item) => {
-        const arrImg = await handleFetchImg(item.HouseId);
-        const placeOffer = await handleFetchPlaceOffer(item.HouseId);
-        const setIsFavorite = await handleFavorite(item.HouseId, UserId);
-        return { ...item.toJSON(), arrImg, placeOffer, IsFavorite: setIsFavorite };
+        const temp = item.toJSON()
+        const arrImg = await handleFetchImg(temp.house.HouseId);
+        const useracc = await handleGetUserIn4(temp.house.PostBy);
+        const address = await handleGetAddress(temp.house.AddressId);
+        const placeOffer = await handleFetchPlaceOffer(temp.house.HouseId);
+        const setIsFavorite = await handleFavorite(temp.house.HouseId, UserId);
+        return { ...temp.house, useracc , address, arrImg, placeOffer, IsFavorite: setIsFavorite };
       })
     );
+
 
     let extendedHouse_ = extendedHouse.filter((item) => {
       return item.IsFavorite !== false;
@@ -123,6 +132,38 @@ const getHouseFavoriteServices = async (UserId) => {
   } catch (error) {
     console.log(error);
     return { error };
+  }
+}
+
+const handleGetAddress = async (AddressId) => {
+  try {
+    let address = await db.address.findAll({
+      where: {
+        [Op.and]: [
+          { AddressId: AddressId}
+        ]
+      }
+    })
+    return address[0];
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+const handleGetUserIn4 = async (UserId) => {
+  try {
+    let User = await db.useracc.findAll({
+      where: {
+        [Op.and]: [
+          { UserId: UserId }
+        ]
+      }
+    })
+    return User[0];
+  } catch (error) {
+    console.log(error);
+    return;
   }
 }
 
