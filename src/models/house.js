@@ -10,17 +10,17 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      house.hasOne(models.managetypehouse, {foreignKey: 'HouseId'});
-      house.hasOne(models.manageplaceoffer, {foreignKey: 'HouseId'});
-      house.hasOne(models.rate, {foreignKey: 'HouseId'});
-      house.hasOne(models.favorite, {foreignKey: 'HouseId'});
-      house.hasOne(models.schedule, {foreignKey: 'HouseId'});
+      house.hasOne(models.managetypehouse, { foreignKey: 'HouseId' });
+      house.hasOne(models.manageplaceoffer, { foreignKey: 'HouseId' });
+      house.hasOne(models.rate, { foreignKey: 'HouseId' });
+      house.hasOne(models.favorite, { foreignKey: 'HouseId' });
+      house.hasOne(models.schedule, { foreignKey: 'HouseId' });
 
-      house.hasOne(models.manageimg, {foreignKey: 'HouseId'});
+      house.hasOne(models.manageimg, { foreignKey: 'HouseId' });
 
-      house.belongsTo(models.address, {foreignKey: 'AddressId'});
-      house.belongsTo(models.judical, {foreignKey: 'JudicalId'});
-      house.belongsTo(models.useracc, {foreignKey: 'PostBy', targetKey: 'UserId'});
+      house.belongsTo(models.address, { foreignKey: 'AddressId' });
+      house.belongsTo(models.judical, { foreignKey: 'JudicalId' });
+      house.belongsTo(models.useracc, { foreignKey: 'PostBy', targetKey: 'UserId' });
     }
   }
   house.init({
@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     NumsOfBed: DataTypes.INTEGER,
     NumsOfBath: DataTypes.INTEGER,
     Capacity: DataTypes.INTEGER,
+    Orientation: DataTypes.STRING,
     // foreign key
     PostBy: {
       type: DataTypes.STRING,
