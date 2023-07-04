@@ -112,7 +112,7 @@ const FilterService = async (
   if (filter.amenities) include.push(filter.amenities);
   if (filter.typeHouse) include.push(filter.typeHouse);
 
-  const perPage = page == -1 ? 6 : 10;
+  const perPage = page == -1 ? 7 : 10;
   const offSet = page == -1 ? 0 : (page - 1) * perPage;
 
   try {
