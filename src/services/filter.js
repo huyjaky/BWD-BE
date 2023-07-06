@@ -27,8 +27,9 @@ const FilterService = async (
   } = guest;
 
   // gop cac mang ammenties neu no ton tai
-  const { essentials, features, location, safety } = amenities;
-  const arrFil = [...essentials, ...features, ...location, ...safety];
+  // const { essentials, features, location, safety } = amenities;
+
+  const arrFil = amenities
   const filter = {};
 
   if (adults != 0 || childrens != 0 || infants != 0) {
@@ -111,9 +112,9 @@ const FilterService = async (
 
   if (filter.amenities) include.push(filter.amenities);
   if (filter.typeHouse) include.push(filter.typeHouse);
-
+  
   const perPage = page == -1 ? 7 : 10;
-  const offSet = page == -1 ? 0 : (page - 1) * perPage;
+  const offSet = page == -1 ? 0 : (Math.floor(page) - 1) * perPage;
 
   try {
     const getHouse_ = await db.house.findAll({

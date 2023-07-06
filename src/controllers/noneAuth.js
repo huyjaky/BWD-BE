@@ -31,6 +31,8 @@ const Filter = async (req, res) =>{
   try {
     const val = req.body;
     const page= req.params._page
+    console.log('filter: ', val.datafil.filter);
+    console.log('page', page);
     const fil = await FilterService(val.datafil.filter, val.datafil.selectPlace, page, val.UserId);
 
     if (fil?.error) {
