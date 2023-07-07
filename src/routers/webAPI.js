@@ -8,6 +8,7 @@ const confirm = require('../controllers/confirm');
 const listHouse = require('../controllers/listHouse');
 const storage = require('../config/imgConfig');
 const postImg = require('../controllers/postImg');
+const modifier = require('../controllers/modifier');
 
 let router = express.Router();
 
@@ -31,11 +32,11 @@ let initRouter = (app) => {
   // nha yeu thich
   router.post('/api/get/house/userid/favorite/:userid', useAuth.verify,listHouse.getHouseUserFavorite);
   // nha co nhieu luot xem nhat
-  router.get('')
+  router.post('/api/modifier/all/house', useAuth.verify, modifier.modifierHouse)
 
-  //nha o quan son tran
+  // chinh sua thong tin nha
 
-  // mua nha
+
 
 
   router.get('/api/get/house/userid/:userid', useAuth.verify, listHouse.getHouseUser);
@@ -48,6 +49,7 @@ let initRouter = (app) => {
 
   // deleteAPI
   router.post('/api/delete/img', useAuth.verify, Img.deleteImg);
+
   router.post('/api/delete/:model/:id', useAuth.verify, common.deleteData);
   router.post('/api/delete/:model', useAuth.verify, common.deleteData);
 
@@ -58,10 +60,13 @@ let initRouter = (app) => {
   router.post('/api/create/schedule', useAuth.verify, confirm.confirm)
   router.post('/api/create/:model', useAuth.verify, common.createData);
   router.post('/api/get/house/filter/:_page', noneAuth.Filter);
+  router.post('/api/get/house/modifier', upload.array('files') , postImg.postImgModifier);
   router.post('/api/post/img', upload.array('files'), postImg.postImg);
 
 
+
   // putAPI: thay doi toan bo doi tuong
+  router.put
   router.put('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
 

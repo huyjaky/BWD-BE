@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     Title: DataTypes.STRING,
     DateUp: DataTypes.DATE,
+    Description: DataTypes.STRING,
     Price: DataTypes.FLOAT,
     Area: DataTypes.STRING,
     NumsOfBed: DataTypes.INTEGER,

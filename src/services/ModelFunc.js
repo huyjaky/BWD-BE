@@ -54,6 +54,7 @@ const createModel = async (db, Data, models) => {
     const dataRaw = Data;
     const data = await db[models].create(dataRaw);
   } catch (error) {
+    console.log(error);
     return { error };
   }
 };

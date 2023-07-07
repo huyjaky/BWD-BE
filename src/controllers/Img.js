@@ -4,7 +4,8 @@ const fs = require('fs');
 const getImage = async (req, res) => {
   try {
     // I:\BWD\BWD-BE\src\private\images\icons
-    const imagePath = path.join(__dirname, '../private/images', req.params[0]); // đường dẫn tới file ảnh
+    console.log(req.params[0]);
+    const imagePath = path.join(__dirname, '../../', req.params[0]); // đường dẫn tới file ảnh
     return res.sendFile(imagePath);
   } catch (error) {
     console.log(error);
