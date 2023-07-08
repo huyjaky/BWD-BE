@@ -39,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     NumsOfBath: DataTypes.INTEGER,
     Capacity: DataTypes.INTEGER,
     Orientation: DataTypes.STRING,
+    Type:DataTypes.STRING,
     // foreign key
     PostBy: {
       type: DataTypes.STRING,
