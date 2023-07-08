@@ -32,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     Decentralization: DataTypes.STRING,
     PersonCode: DataTypes.STRING,
     CustomerType: DataTypes.STRING,
-    Image: DataTypes.STRING
+    Image: DataTypes.STRING,
+    Phone: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'useracc',

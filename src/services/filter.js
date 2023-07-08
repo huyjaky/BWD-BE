@@ -116,8 +116,21 @@ const FilterService = async (
   if (filter.amenities) include.push(filter.amenities);
   if (filter.typeHouse) include.push(filter.typeHouse);
 
-  const perPage = page == -1 ? 7 : 10;
-  const offSet = page == -1 ? 0 : (Math.floor(page) - 1) * perPage;
+  // const perPage = page == -1 ? 7 : 10;
+  // const offSet = page == -1 ? 0 : (Math.floor(page) - 1) * perPage;
+  let perPage
+  let offSet
+  if (page == 1) {
+    perPage = 10;
+    offSet =(Math.floor(page) - 1) * perPage
+  } else if (page = -1) {
+
+    perPage = 7;
+    offSet = 0
+  } else {
+    perPage = 50;
+    offSet = 1
+  }
 
   try {
     const getHouse_ = await db.house.findAll({
