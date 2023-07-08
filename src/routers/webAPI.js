@@ -9,6 +9,7 @@ const listHouse = require('../controllers/listHouse');
 const storage = require('../config/imgConfig');
 const postImg = require('../controllers/postImg');
 const modifier = require('../controllers/modifier');
+const deleteHouse = require('../controllers/deleteHouse');
 
 let router = express.Router();
 
@@ -29,16 +30,9 @@ let initRouter = (app) => {
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
   router.get('/api/get/house/page/', noneAuth.getHouse);
 
-  // nha yeu thich
   router.post('/api/get/house/userid/favorite/:userid', useAuth.verify,listHouse.getHouseUserFavorite);
-  // nha co nhieu luot xem nhat
   router.post('/api/modifier/all/house', useAuth.verify, modifier.modifierHouse)
-
-  // chinh sua thong tin nha
-
-
-
-
+  router.post('/api/delete/house', useAuth.verify, deleteHouse.deleteHouse);
   router.get('/api/get/house/userid/:userid', useAuth.verify, listHouse.getHouseUser);
 
 

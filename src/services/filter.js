@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const db = require("../models");
 const FilterService = async (
-  { amenities, bathRooms, beds, hostLanguage, maxPrice, minPrice, typeHouse },
+  { amenities, bathRooms, beds, hostLanguage, maxPrice, minPrice, typeHouse, orientation },
   { address, checkInDay, checkOutDay, guest },
   page, UserId
 ) => {
@@ -9,15 +9,14 @@ const FilterService = async (
     countryRegion,
     locality,
     adminDistrict,
-    adminDistrict2,
     countryRegionIso2,
-    houseNumber,
     postalCode,
     addressLine,
     streetName,
     formattedAddress,
     latitude,
     longitude,
+    title
   } = address;
 
   const {
@@ -34,6 +33,10 @@ const FilterService = async (
 
   if (adults != 0 || childrens != 0 || infants != 0) {
     filter.beds = { NumsOfBed: { [Op.lte]: adults + childrens - 1 } }
+  }
+
+  if (orientation) {
+    filter.orientation = {Orientation: orientation}
   }
 
   if (bathRooms != 0) {
@@ -112,7 +115,7 @@ const FilterService = async (
 
   if (filter.amenities) include.push(filter.amenities);
   if (filter.typeHouse) include.push(filter.typeHouse);
-  
+
   const perPage = page == -1 ? 7 : 10;
   const offSet = page == -1 ? 0 : (Math.floor(page) - 1) * perPage;
 
@@ -124,6 +127,7 @@ const FilterService = async (
           filter.bathRooms,
           filter.hostLanguage,
           filter.price,
+          filter.orientation
         ],
       },
       include: include,
