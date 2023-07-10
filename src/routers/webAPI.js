@@ -10,6 +10,7 @@ const storage = require('../config/imgConfig');
 const postImg = require('../controllers/postImg');
 const modifier = require('../controllers/modifier');
 const deleteHouse = require('../controllers/deleteHouse');
+const createHouse = require('../controllers/createHouse');
 
 let router = express.Router();
 
@@ -35,6 +36,10 @@ let initRouter = (app) => {
   router.post('/api/delete/house', useAuth.verify, deleteHouse.deleteHouse);
   router.get('/api/get/house/userid/:userid', useAuth.verify, listHouse.getHouseUser);
 
+  router.post('/api/create/house/img', upload.array('files'), createHouse.postImgCreateHouse);
+  router.post('/api/create/house/house', useAuth.verify, createHouse.createHouse);
+
+
 
   router.get('/api/get/:model/:cond/:value', useAuth.verify, common.getDataCondition);
   router.get('/api/get/:model/:id', useAuth.verify, common.getData);
@@ -55,12 +60,13 @@ let initRouter = (app) => {
   router.post('/api/create/:model', useAuth.verify, common.createData);
   router.post('/api/get/house/filter/:_page', noneAuth.Filter);
   router.post('/api/get/house/modifier', upload.array('files') , postImg.postImgModifier);
+
+
   router.post('/api/post/img', upload.array('files'), postImg.postImg);
 
 
 
   // putAPI: thay doi toan bo doi tuong
-  router.put
   router.put('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
 
