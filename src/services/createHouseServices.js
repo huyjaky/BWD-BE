@@ -20,17 +20,13 @@ let postImg = async (arrImg) => {
 
 
 const CreateHouseServices = async (House, Address, TypeArr, PlaceOffer) => {
-  // console.log(House);
-  // console.log(Address);
-  // console.log(TypeArr);
-  // console.log(PlaceOffer);
   try {
     await createSingleModel(db, 'address', Address);
     await createSingleModel(db, 'house', House);
-    console.log(arrImg_);
     await createModel(db, 'manageimg', arrImg_.map((item, index)=>{
       return {HouseId: House.HouseId, ImgId: item.ImgId}
     }));
+    arrImg_=[]
     await createModel(db, 'managetypehouse', TypeArr.map((item, index)=>{
       return {HouseId: House.HouseId, TypeHouseId: item}
     }));
