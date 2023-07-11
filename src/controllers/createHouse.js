@@ -1,18 +1,19 @@
 const createHouseServices = require("../services/createHouseServices");
 const { v4: uuidv4 } = require('uuid');
+const { statusReturn } = require("../untils/statusReturn");
 
 const postImgCreateHouse = async (req, res) => {
   try {
     const files = await req.files;
     console.log('createhouse', files);
 
-    const postImg = await createHouseServices.postImg(files.map((item,index)=>{
-      return{
+    const postImg = await createHouseServices.postImg(files.map((item, index) => {
+      return {
         Path: item.path,
         ImgId: uuidv4()
       }
     }))
-    return res.status(200).json({message:'done'})
+    return res.status(200).json({ message: 'done' })
   } catch (error) {
     console.log(error);
     return res.json(error);
@@ -63,10 +64,14 @@ const createHouse = async (req, res) => {
     }
 
     const create = await createHouseServices.CreateHouseServices(house, address, TypeArr, PlaceOffer);
-
+    if (create.error) {
+      return statusReturn(res, 500, { message: 'error', err: create.error }, error);
+    } else {
+      return res.status(200).json({ message: 'done' });
+    }
   } catch (error) {
     console.log(error);
-    return;
+    return statusReturn(res, 500, { message: 'error', err: create.error }, error);
   }
 }
 

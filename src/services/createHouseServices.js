@@ -11,7 +11,7 @@ let postImg = async (arrImg) => {
     })
 
     await createModel(db, 'img', arrImg);
-    return 'finish';
+    return ;
   } catch (error) {
     console.log(error);
     return statusReturn.statusReturn(res, 500, "Something went wrong", error);
@@ -37,7 +37,7 @@ const CreateHouseServices = async (House, Address, TypeArr, PlaceOffer) => {
 
   } catch (error)  {
     console.log(error);
-    return {error}
+    return {error: error};
   }
 }
 
