@@ -14,7 +14,7 @@ let postImg = async (arrImg) => {
     return ;
   } catch (error) {
     console.log(error);
-    return statusReturn.statusReturn(res, 500, "Something went wrong", error);
+    return {error: error}
   }
 }
 

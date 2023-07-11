@@ -13,6 +13,9 @@ const postImgCreateHouse = async (req, res) => {
         ImgId: uuidv4()
       }
     }))
+    if (postImg.error) {
+      return statusReturn.statusReturn(res, 500, "Something went wrong", error);
+    }
     return res.status(200).json({ message: 'done' })
   } catch (error) {
     console.log(error);
