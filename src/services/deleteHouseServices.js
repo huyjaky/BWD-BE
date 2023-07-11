@@ -3,22 +3,62 @@ const { Op } = require("sequelize");
 
 const deleteHouseServices = async (HouseId, AddressId) => {
   try {
-    await deleteModelData(db, 'managetypehouse', HouseId);
-    await deleteModelData(db, 'manageplaceoffer', HouseId);
-    await deleteModelData(db, 'manageimg', HouseId);
+    await deleteModelHaveHouseId(db, 'managetypehouse', HouseId);
+    await deleteModelHaveHouseId(db, 'manageplaceoffer', HouseId);
+    await deleteModelHaveHouseId(db, 'manageimg', HouseId);
     await deleteAllImgEmpty(db);
-    await deleteModelData(db, 'house', HouseId);
-    await deleteModelData(db, 'address', AddressId);
+    await deleteModelHaveHouseId(db, 'house', HouseId);
+
+    await deleteModelHaveAddressId(db, 'address', AddressId);
   } catch (error) {
     console.log(error);
     return { error }
   }
 }
 
-const deleteModelData = async (db, models, data) => {
+const deleteModelHaveAddressId =  async (db, models, data) => {
+
   try {
-    const deleteAllData = await db[models].destroy({ where: data });
-    return deleteAllData;
+    const dataForDel = await db[models].findAll({
+      where: {AddressId: data}
+    });
+
+    if (dataForDel.length > 0) {
+      const deleteAllData = await Promise.all(
+        dataForDel.map((img) => img.destroy())
+      );
+      return deleteAllData;
+    }
+
+    return dataForDel;
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
+
+const deleteModelHaveHouseId = async (db, models, data) => {
+  // try {
+  //   const deleteAllData = await db[models].destroy({ where: data });
+  //   return deleteAllData;
+  // } catch (error) {
+  //   console.log(error);
+  //   return { error };
+  // }
+
+  try {
+    const dataForDel = await db[models].findAll({
+      where: {HouseId: data}
+    });
+
+    if (dataForDel.length > 0) {
+      const deleteAllData = await Promise.all(
+        dataForDel.map((img) => img.destroy())
+      );
+      return deleteAllData;
+    }
+
+    return dataForDel;
   } catch (error) {
     console.log(error);
     return { error };
