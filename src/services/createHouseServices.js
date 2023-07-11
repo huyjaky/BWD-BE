@@ -9,7 +9,6 @@ let postImg = async (arrImg) => {
       arrImg_.push(item);
       return item;
     })
-
     await createModel(db, 'img', arrImg);
     return ;
   } catch (error) {

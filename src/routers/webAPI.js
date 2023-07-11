@@ -11,6 +11,7 @@ const postImg = require('../controllers/postImg');
 const modifier = require('../controllers/modifier');
 const deleteHouse = require('../controllers/deleteHouse');
 const createHouse = require('../controllers/createHouse');
+const test = require('../controllers/test');
 
 let router = express.Router();
 
@@ -63,12 +64,10 @@ let initRouter = (app) => {
 
 
   router.post('/api/post/img', upload.array('files'), postImg.postImg);
-
-
-
   // putAPI: thay doi toan bo doi tuong
   router.put('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
+  router.post('/api/test', test.test);
 
   return app.use('/', router);
 }
