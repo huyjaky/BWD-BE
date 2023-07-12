@@ -23,8 +23,10 @@ const Login = async (req, res) => {
     jwt.sign(data, process.env.REFRESH_TOKEN_SECRET)
   );
   // if save refreshToken in dtb have error return
-  if (refreshToken?.error)
+  if (refreshToken?.error) {
+    console.log(refreshToken?.error);
     return statusReturn(res, 500, "Something went wrong 2", refreshToken.error);
+  }
 
   return res.status(200).json({
     userAcc: user,
@@ -70,8 +72,7 @@ const Refresh = async (req, res) => {
 const Logout = async (req, res) => {
   const refreshToken = req.body.refreshToken;
   const del = await Auth.deleteRefreshToken(refreshToken);
-  if (!del || del?.error)
-    return statusReturn(res, 500, "Something went wrong", del.error);
+  if (!del || del?.error) return statusReturn(res, 500, "Something went wrong", del.error);
   return res.status(200).json({ message: "Logout successfully" });
 };
 

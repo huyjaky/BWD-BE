@@ -8,6 +8,7 @@ const saveRefreshToken = async (refreshToken)=>{
 
     return refreshToken;
   } catch (error) {
+    console.log(error);
     return {error: error}
   }
 }
@@ -22,6 +23,7 @@ const deleteRefreshToken = async (refreshToken) => {
       return true;
     }
   } catch (error) {
+    console.log(error);
     return {error: error}
   }
 }
@@ -39,6 +41,7 @@ const refreshTokenExist = async (refreshToken) =>{
       return true;
     }
   } catch (error) {
+    console.log(error);
     return {error: error}
   }
 }
@@ -59,6 +62,7 @@ const userExist = async ({username, password}) => {
     }
 
   } catch (error) {
+    console.log(error);
     return {error: error};
   }
 }
