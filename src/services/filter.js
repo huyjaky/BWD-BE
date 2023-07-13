@@ -36,26 +36,32 @@ const FilterService = async (
   }
 
   if (orientation) {
+    console.log('fil orien');
     filter.orientation = {Orientation: orientation}
   }
 
   if (bathRooms != 0) {
+    console.log('fil bathR');
     filter.bathRooms = { NumsOfBath: bathRooms };
   }
 
   if (beds != 0) {
+    console.log('filbeds');
     filter.beds = { NumsOfBed: beds };
   }
 
   if (hostLanguage) {
+    console.log('filhost');
     filter.hostLanguage = { HostLanguage: hostLanguage };
   }
 
-  if (maxPrice == 250) maxPrice = 999999;
+  if (maxPrice == 250) maxPrice = 99999999;
+
   filter.price = { Price: { [Op.between]: [minPrice, maxPrice] } };
 
   // dinh nghia inlcude cho type house neu no ton tai
   if (typeHouse.length != 0) {
+    console.log('fil type');
     filter.typeHouse = {
       model: db.managetypehouse,
       required: true,
@@ -116,6 +122,8 @@ const FilterService = async (
   if (filter.amenities) include.push(filter.amenities);
   if (filter.typeHouse) include.push(filter.typeHouse);
 
+  console.log(filter);
+  
   // const perPage = page == -1 ? 7 : 10;
   // const offSet = page == -1 ? 0 : (Math.floor(page) - 1) * perPage;
   let perPage
@@ -131,6 +139,8 @@ const FilterService = async (
     perPage = 50;
     offSet = 1
   }
+
+
 
   try {
     const getHouse_ = await db.house.findAll({

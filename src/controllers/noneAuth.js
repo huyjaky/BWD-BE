@@ -22,7 +22,7 @@ const getHouse = async (req, res) => {
     }
     return res.status(200).json(getAll);
   } catch (error) {
-    console.log("check");
+    console.log(error);
     return statusReturn.statusReturn(res, 500, "Something went wrong", error);
   }
 }
@@ -32,7 +32,7 @@ const Filter = async (req, res) =>{
     const val = req.body;
     const page= req.params._page
     console.log('filter: ', val.datafil.filter);
-    console.log('page', page);
+    console.log('select', val.datafil.selectPlace);
     const fil = await FilterService(val.datafil.filter, val.datafil.selectPlace, page, val.UserId);
 
     if (fil?.error) {
