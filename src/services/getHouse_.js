@@ -19,7 +19,7 @@ const getHouseServices = async (page, id, UserId) => {
         {
           model: db.useracc,
           required: true,
-          attributes: ["UserId", "UserName", "Gmail", "Image"],
+          attributes: ["UserId", "UserName", "Gmail", "Image", "Phone"],
         },
       ]
     }
@@ -64,7 +64,7 @@ const getHouseUser = async (UserId) => {
         {
           model: db.useracc,
           required: true,
-          attributes: ["UserId", "UserName", "Gmail", "Image"],
+          attributes: ["UserId", "UserName", "Gmail", "Image", "Phone"],
           where: { UserId: UserId }
         },
       ]

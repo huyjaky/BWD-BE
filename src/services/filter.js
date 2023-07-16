@@ -55,7 +55,7 @@ const FilterService = async (
     filter.hostLanguage = { HostLanguage: hostLanguage };
   }
 
-  if (maxPrice == 250) maxPrice = 99999999;
+  if (maxPrice == 500000) maxPrice = 99999999;
 
   filter.price = { Price: { [Op.between]: [minPrice, maxPrice] } };
 
@@ -95,22 +95,14 @@ const FilterService = async (
     {
       model: db.useracc,
       required: true,
-      attributes: ["UserId", "UserName", "Gmail", "Image"],
+      attributes: ["UserId", "UserName", "Gmail", "Image", "Phone"],
     },
   ];
-  if (formattedAddress) {
+  if (addressLine) {
     include.push({
       model: db.address,
       required: true,
-      where: {
-        [Op.and]: [
-          {
-            formattedAddress: {
-              [Op.like]: `%${formattedAddress}%`
-            }
-          }
-        ]
-      },
+      where: {latitude: latitude, longitude: longitude},
     });
   } else {
     include.push({
@@ -123,7 +115,7 @@ const FilterService = async (
   if (filter.typeHouse) include.push(filter.typeHouse);
 
   console.log(filter);
-  
+
   // const perPage = page == -1 ? 7 : 10;
   // const offSet = page == -1 ? 0 : (Math.floor(page) - 1) * perPage;
   let perPage

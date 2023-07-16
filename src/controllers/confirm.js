@@ -9,6 +9,7 @@ const confirm = async (req, res) =>{
     if (isExist) {
       return res.status(200).json({isExist: isExist});
     } else {
+      
       const cre = createModel(db, req.body, 'schedule');
       return res.status(200).json({isExist: isExist, message: 'Done create schedule'});
     }

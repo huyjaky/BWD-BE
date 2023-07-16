@@ -7,7 +7,7 @@ const isExistSchedule = async ({ HouseId, UserId, PhoneNumber, Date, Adults, Chi
   Infants
 }) => {
   try {
-    const isExist = db.schedule.findAll({
+    const isExist = await db.schedule.findAll({
       where: {
         [Op.and]: [
           { HouseId: HouseId },
@@ -15,6 +15,8 @@ const isExistSchedule = async ({ HouseId, UserId, PhoneNumber, Date, Adults, Chi
         ]
       }
     });
+    console.log(isExist);
+
     if (isExist.length != 0) {
       return true;
     } else {

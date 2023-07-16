@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     Adults: DataTypes.NUMBER,
     Childrens: DataTypes.NUMBER,
     Infants: DataTypes.NUMBER,
+    Host:DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'schedule',

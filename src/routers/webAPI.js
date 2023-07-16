@@ -12,6 +12,7 @@ const modifier = require('../controllers/modifier');
 const deleteHouse = require('../controllers/deleteHouse');
 const createHouse = require('../controllers/createHouse');
 const test = require('../controllers/test');
+const schedule = require('../controllers/schedule');
 
 let router = express.Router();
 
@@ -31,6 +32,11 @@ let initRouter = (app) => {
   router.get('/api/get/house/page/:_page', noneAuth.getHouse);
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
   router.get('/api/get/house/page/', noneAuth.getHouse);
+
+  router.post('/api/get/schedule/host', useAuth.verify, schedule.GetSchedule );
+  router.post('/api/modifier/schedule/host', useAuth.verify, schedule.ModifierSchedule);
+  router.post('/api/edit/title/schedule/host', useAuth.verify, schedule.EditTitle);
+  router.post('/api/delete/scheduel/host', schedule.DeleteSchedule);
 
   router.post('/api/get/house/userid/favorite/:userid', useAuth.verify,listHouse.getHouseUserFavorite);
   router.post('/api/modifier/all/house', useAuth.verify, modifier.modifierHouse)
