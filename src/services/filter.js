@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
 const db = require("../models");
+const Sequelize = require('sequelize');
+
 const FilterService = async (
   { amenities, bathRooms, beds, hostLanguage, maxPrice, minPrice, typeHouse, orientation },
   { address, checkInDay, checkOutDay, guest },
@@ -37,7 +39,7 @@ const FilterService = async (
 
   if (orientation) {
     console.log('fil orien');
-    filter.orientation = {Orientation: orientation}
+    filter.orientation = { Orientation: orientation }
   }
 
   if (bathRooms != 0) {
@@ -59,36 +61,43 @@ const FilterService = async (
 
   filter.price = { Price: { [Op.between]: [minPrice, maxPrice] } };
 
-  // dinh nghia inlcude cho type house neu no ton tai
+  // bo loc typehouse va amenities
+  let houseIdArr = [];
   if (typeHouse.length != 0) {
-    console.log('fil type');
-    filter.typeHouse = {
-      model: db.managetypehouse,
-      required: true,
-      include: [
-        {
-          model: db.typehouse,
-          required: true,
-          where: { TypeHouse: { [Op.in]: typeHouse } },
-        },
-      ],
-    };
+    const houseIdTypeHouse = await handleFetchTypeHouse(typeHouse);
+    houseIdArr = houseIdTypeHouse.map((item, index) => {
+      return item.dataValues.HouseId
+    })
   }
 
-  // dinh nghia cho amenities
-  if (arrFil.length !== 0) {
-    filter.amenities = {
-      model: db.manageplaceoffer,
-      required: true,
-      include: [
-        {
-          model: db.placeoffer,
-          required: true,
-          where: { PlaceOffer: { [Op.in]: arrFil } },
-        },
-      ],
-    };
+  if (arrFil.length != 0) {
+    const houseIdPlaceOffer = await handleFetchPlaceOffer(arrFil);
+    if (houseIdArr.length == 0) {
+      houseIdArr = houseIdPlaceOffer.map((item, index) => {
+        return item.dataValues
+      })
+    } else {
+      let arrTemp = [];
+      for (const item of houseIdPlaceOffer) {
+        if (houseIdArr.includes(item.dataValues.HouseId)) {
+          arrTemp.push(item.dataValues.HouseId)
+        }
+      }
+      console.log(arrTemp);
+      houseIdArr = arrTemp;
+    }
   }
+
+  if (houseIdArr.length != 0) {
+    filter.typehouseAme = { HouseId: { [Op.in]: houseIdArr } }
+  } else {
+    houseIdArr = ['123123123123123123123123']
+    filter.typehouseAme = { HouseId: { [Op.in]: houseIdArr } }
+  }
+
+  console.log('houseIdArr', houseIdArr);
+
+
 
   // dinh nghia include va push nhung filter can thiet
   const include = [
@@ -98,11 +107,13 @@ const FilterService = async (
       attributes: ["UserId", "UserName", "Gmail", "Image", "Phone"],
     },
   ];
+
   if (addressLine) {
+    console.log('address line', addressLine);
     include.push({
       model: db.address,
       required: true,
-      where: {latitude: latitude, longitude: longitude},
+      where: { latitude: latitude, longitude: longitude },
     });
   } else {
     include.push({
@@ -111,28 +122,21 @@ const FilterService = async (
     });
   }
 
-  if (filter.amenities) include.push(filter.amenities);
-  if (filter.typeHouse) include.push(filter.typeHouse);
+  let perPage = 10;
+  let offSet = (Math.floor(parseInt(page)) - 1) * page;
+  // let offSet = parseInt(page);
 
-  console.log(filter);
 
-  // const perPage = page == -1 ? 7 : 10;
-  // const offSet = page == -1 ? 0 : (Math.floor(page) - 1) * perPage;
-  let perPage
-  let offSet
-  if (page == 1) {
-    perPage = 10;
-    offSet =(Math.floor(page) - 1) * perPage
-  } else if (page = -1) {
-
+  if (page == -1) {
     perPage = 7;
     offSet = 0
-  } else {
-    perPage = 50;
+  } else if (page == -2) {
+    perPage = 99;
     offSet = 1
   }
-
-
+  // console.log(page);
+  // console.log('offset', offSet);
+  // console.log('limit', perPage);
 
   try {
     const getHouse_ = await db.house.findAll({
@@ -142,25 +146,30 @@ const FilterService = async (
           filter.bathRooms,
           filter.hostLanguage,
           filter.price,
-          filter.orientation
+          filter.orientation,
+          filter.typehouseAme
         ],
       },
+
       include: include,
       limit: perPage,
       offset: offSet,
     });
 
+
     let extendedHouse = await Promise.all(
       getHouse_.map(async (item) => {
         const arrImg = await handleFetchImg(item.HouseId);
-        const placeOffer = await handleFetchPlaceOffer(item.HouseId);
+        // const placeOffer = await handleFetchPlaceOffer(item.HouseId, arrFil);
+        // const typeHouse_ = await handleFetchTypeHouse(item.HouseId, typeHouse);
         if (UserId) {
           const setIsFavorite = await handleFavorite(item.HouseId, UserId);
-          return { ...item.toJSON(), arrImg, placeOffer, IsFavorite: setIsFavorite };
+          return { ...item.toJSON(), arrImg, IsFavorite: setIsFavorite };
         }
-        return { ...item.toJSON(), arrImg, placeOffer }
+        return { ...item.toJSON(), arrImg }
       })
     );
+
 
     return extendedHouse;
   } catch (error) {
@@ -192,9 +201,38 @@ const handleFavorite = async (HouseId, UserId) => {
   }
 }
 
-const handleFetchPlaceOffer = async (HouseId) => {
+const handleFetchTypeHouse = async (typehouse) => {
   try {
-    let getHousePlaceOffer = await db.placeoffer.findAll({
+    let getHousePlaceOffer = await db.house.findAll({
+      attributes: ['HouseId'],
+      include: [
+        {
+          model: db.managetypehouse,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: db.typehouse,
+              required: true,
+              attributes: [],
+              where: { TypeHouse: { [Op.in]: typehouse } },
+            },
+          ],
+        },
+      ],
+    });
+
+    return getHousePlaceOffer;
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
+
+const handleFetchPlaceOffer = async (amenities) => {
+  try {
+    let getHousePlaceOffer = await db.house.findAll({
+      attributes: ['HouseId'],
       include: [
         {
           model: db.manageplaceoffer,
@@ -202,10 +240,10 @@ const handleFetchPlaceOffer = async (HouseId) => {
           attributes: [],
           include: [
             {
-              model: db.house,
+              model: db.placeoffer,
               required: true,
-              where: { HouseId: HouseId },
               attributes: [],
+              where: { PlaceOffer: { [Op.in]: amenities } },
             },
           ],
         },
