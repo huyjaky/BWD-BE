@@ -25,7 +25,9 @@ const CreateHouseServices = async (House, Address, TypeArr, PlaceOffer) => {
     await createModel(db, 'manageimg', arrImg_.map((item, index)=>{
       return {HouseId: House.HouseId, ImgId: item.ImgId}
     }));
-    arrImg_=[]
+
+    arrImg_= await []
+
     await createModel(db, 'managetypehouse', TypeArr.map((item, index)=>{
       return {HouseId: House.HouseId, TypeHouseId: item}
     }));

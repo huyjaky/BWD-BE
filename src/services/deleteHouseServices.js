@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 
 const deleteHouseServices = async (HouseId, AddressId) => {
   try {
+    await deleteModelHaveHouseId(db, 'favorite', HouseId);
     await deleteModelHaveHouseId(db, 'managetypehouse', HouseId);
     await deleteModelHaveHouseId(db, 'manageplaceoffer', HouseId);
     await deleteModelHaveHouseId(db, 'manageimg', HouseId);

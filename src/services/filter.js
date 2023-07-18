@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const db = require("../models");
 const Sequelize = require('sequelize');
+const { json } = require("body-parser");
 
 const FilterService = async (
   { amenities, bathRooms, beds, hostLanguage, maxPrice, minPrice, typeHouse, orientation },
@@ -61,17 +62,31 @@ const FilterService = async (
 
   filter.price = { Price: { [Op.between]: [minPrice, maxPrice] } };
 
+
+  let perPage = 10;
+  let offSet = parseInt(page);
+  // let offSet = parseInt(page)
+
+  if (page == -1) {
+    perPage = 7;
+    offSet = 0
+  } else if (page == -2) {
+    perPage = 99;
+    offSet = 1
+  }
+
+
   // bo loc typehouse va amenities
   let houseIdArr = [];
   if (typeHouse.length != 0) {
-    const houseIdTypeHouse = await handleFetchTypeHouse(typeHouse);
+    const houseIdTypeHouse = await handleFetchTypeHouse(typeHouse, perPage, offSet);
     houseIdArr = houseIdTypeHouse.map((item, index) => {
       return item.dataValues.HouseId
     })
   }
 
   if (arrFil.length != 0) {
-    const houseIdPlaceOffer = await handleFetchPlaceOffer(arrFil);
+    const houseIdPlaceOffer = await handleFetchPlaceOffer(arrFil, perPage, offSet);
     if (houseIdArr.length == 0) {
       houseIdArr = houseIdPlaceOffer.map((item, index) => {
         return item.dataValues
@@ -95,7 +110,6 @@ const FilterService = async (
     filter.typehouseAme = { HouseId: { [Op.in]: houseIdArr } }
   }
 
-  console.log('houseIdArr', houseIdArr);
 
 
 
@@ -122,21 +136,7 @@ const FilterService = async (
     });
   }
 
-  let perPage = 10;
-  let offSet = (Math.floor(parseInt(page)) - 1) * page;
-  // let offSet = parseInt(page);
 
-
-  if (page == -1) {
-    perPage = 7;
-    offSet = 0
-  } else if (page == -2) {
-    perPage = 99;
-    offSet = 1
-  }
-  // console.log(page);
-  // console.log('offset', offSet);
-  // console.log('limit', perPage);
 
   try {
     const getHouse_ = await db.house.findAll({
@@ -152,16 +152,15 @@ const FilterService = async (
       },
 
       include: include,
-      limit: perPage,
-      offset: offSet,
+      // limit: perPage,
+      // offset: offSet,
     });
 
 
     let extendedHouse = await Promise.all(
       getHouse_.map(async (item) => {
         const arrImg = await handleFetchImg(item.HouseId);
-        // const placeOffer = await handleFetchPlaceOffer(item.HouseId, arrFil);
-        // const typeHouse_ = await handleFetchTypeHouse(item.HouseId, typeHouse);
+
         if (UserId) {
           const setIsFavorite = await handleFavorite(item.HouseId, UserId);
           return { ...item.toJSON(), arrImg, IsFavorite: setIsFavorite };
@@ -170,6 +169,9 @@ const FilterService = async (
       })
     );
 
+    // console.log('extendedHouse', extendedHouse);
+    console.log('perpage', perPage);
+    console.log('offset', offSet);
 
     return extendedHouse;
   } catch (error) {
@@ -201,7 +203,7 @@ const handleFavorite = async (HouseId, UserId) => {
   }
 }
 
-const handleFetchTypeHouse = async (typehouse) => {
+const handleFetchTypeHouse = async (typehouse, perPage, offSet) => {
   try {
     let getHousePlaceOffer = await db.house.findAll({
       attributes: ['HouseId'],
@@ -220,6 +222,8 @@ const handleFetchTypeHouse = async (typehouse) => {
           ],
         },
       ],
+      limit: perPage,
+      offset: offSet,
     });
 
     return getHousePlaceOffer;
@@ -229,7 +233,7 @@ const handleFetchTypeHouse = async (typehouse) => {
   }
 };
 
-const handleFetchPlaceOffer = async (amenities) => {
+const handleFetchPlaceOffer = async (amenities, perPage, offSet) => {
   try {
     let getHousePlaceOffer = await db.house.findAll({
       attributes: ['HouseId'],
@@ -248,6 +252,8 @@ const handleFetchPlaceOffer = async (amenities) => {
           ],
         },
       ],
+      limit: perPage,
+      offset: offSet,
     });
     return getHousePlaceOffer;
   } catch (error) {

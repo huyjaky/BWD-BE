@@ -33,9 +33,9 @@ let initRouter = (app) => {
   router.get('/api/get/house/id/:id', noneAuth.getHouse);
   router.get('/api/get/house/page/', noneAuth.getHouse);
 
+  router.post('/api/create/schedule/host', useAuth.verify, schedule.CreateSchedule);
   router.post('/api/get/schedule/host', useAuth.verify, schedule.GetSchedule );
   router.post('/api/modifier/schedule/host', useAuth.verify, schedule.ModifierSchedule);
-  router.post('/api/edit/title/schedule/host', useAuth.verify, schedule.EditTitle);
   router.post('/api/delete/scheduel/host', schedule.DeleteSchedule);
 
   router.post('/api/get/house/userid/favorite/:userid', useAuth.verify,listHouse.getHouseUserFavorite);
@@ -63,7 +63,6 @@ let initRouter = (app) => {
   router.patch('/api/modifier/:model/:id', useAuth.verify, common.modifierData);
 
   // postAPI
-  router.post('/api/create/schedule', useAuth.verify, confirm.confirm)
   router.post('/api/create/:model', useAuth.verify, common.createData);
   router.post('/api/get/house/filter/:_page', noneAuth.Filter);
   router.post('/api/get/house/modifier', upload.array('files') , postImg.postImgModifier);

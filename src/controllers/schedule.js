@@ -1,6 +1,6 @@
 const scheduleServices = require("../services/scheduleServices")
 const { statusReturn } = require("../untils/statusReturn")
-
+const {v4: uuidv4} = require('uuid');
 
 
 const GetSchedule = async (req, res) => {
@@ -18,7 +18,7 @@ const GetSchedule = async (req, res) => {
 
 const DeleteSchedule = async (req, res) => {
   try {
-    const result = await scheduleServices.DeleteScheduleHost(req.body.HostId);
+    const result = await scheduleServices.DeleteScheduleHost(req.body.EventId);
     if (result?.error) {
       return statusReturn(res, 400, { message: 'error' }, result?.error);
     }
@@ -31,7 +31,7 @@ const DeleteSchedule = async (req, res) => {
 
 const ModifierSchedule = async (req, res) => {
   try {
-    const result = await scheduleServices.ModifierScheduleHost(req.body.data, req.body.HostId);
+    const result = await scheduleServices.ModifierScheduleHost(req.body.data, req.body.EventId);
 
     if (result?.error) {
       return statusReturn(res, 400, { message: 'error' }, result?.error);
@@ -44,9 +44,13 @@ const ModifierSchedule = async (req, res) => {
   }
 }
 
-const EditTitle = async (req, res) => {
+const CreateSchedule = async (req, res) => {
   try {
-    const result = await scheduleServices.EditTitleHost(req.body.data, req.body.HostId);
+    // console.log({...req.body, EventId: uuidv4()});
+    const result = await scheduleServices.CreateEvent({...req.body, EventId: uuidv4(),
+      HouseId: null,
+      UserId: null,
+    });
     if (result?.error) {
       return statusReturn(res, 400, { message: 'error' }, result?.error);
     }
@@ -55,11 +59,13 @@ const EditTitle = async (req, res) => {
   } catch (error) {
     return statusReturn(res, 400, { error }, error)
   }
+
 }
+
 
 module.exports = {
   GetSchedule: GetSchedule,
   DeleteSchedule: DeleteSchedule,
   ModifierSchedule: ModifierSchedule,
-  EditTitle: EditTitle
+  CreateSchedule: CreateSchedule,
 }

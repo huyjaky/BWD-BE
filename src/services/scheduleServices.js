@@ -23,8 +23,7 @@ const ScheduleServicesHost = async (HostId) => {
     let extendedSchedule = await Promise.all(
       schedule.map(async (item) => {
         const arrImg = await handleFetchImg(item.HouseId);
-        console.log(arrImg);
-        return { ...item.toJSON(), house: {...item.toJSON().house, arrImg} }
+        return { ...item.toJSON(), house: { ...item.toJSON().house, arrImg } }
       })
     );
 
@@ -62,19 +61,10 @@ const handleFetchImg = async (HouseId) => {
   }
 };
 
-const DeleteScheduleHost = async (HouseId) => {
+const DeleteScheduleHost = async (EventId) => {
   try {
-    // const scheduel = await db.scheduel.findAll({
-    //   where: {HouseId: HouseId}
-    // })
 
-    // if (scheduel.length > 0) {
-    //   const deleteAllData = await Promise.all(
-    //     scheduel.map((img) => img.destroy())
-    //   );
-    //   return deleteAllData;
-    // }
-    const deleteSchedule = await db.schedule.destroy({ where: { HouseId: HouseId } });
+    const deleteSchedule = await db.schedule.destroy({ where: { EventId: EventId } });
     return deleteSchedule;
   } catch (error) {
     console.log(error);
@@ -82,13 +72,13 @@ const DeleteScheduleHost = async (HouseId) => {
   }
 }
 
-const ModifierScheduleHost = async (data, id) => {
+const ModifierScheduleHost = async (data, EventId) => {
   try {
-    const entity = await db.schedule.findOne({ where: { HouseId: id } });
+    const entity = await db.schedule.findOne({ where: { EventId: EventId} });
     console.log('data', data);
     console.log('entity', entity);
     if (entity) {
-      await entity.update({ Date: data });
+      await entity.update(data);
       return true;
     }
 
@@ -98,19 +88,13 @@ const ModifierScheduleHost = async (data, id) => {
   }
 }
 
-const EditTitleHost = async (data, id) => {
+const CreateEvent = async (data_) => {
   try {
-    const entity = await db.schedule.findOne({ where: { HouseId: id } });
-    console.log('data', data);
-    console.log('entity', entity);
-    if (entity) {
-      await entity.update({ PhoneNumber: data });
-      return true;
-    }
-
+    const data = await db.schedule.create(data_);
+    return data;
   } catch (error) {
     console.log(error);
-    return { error };
+    return { error }
   }
 }
 
@@ -118,5 +102,5 @@ module.exports = {
   ScheduleServicesHost: ScheduleServicesHost,
   DeleteScheduleHost: DeleteScheduleHost,
   ModifierScheduleHost: ModifierScheduleHost,
-  EditTitleHost: EditTitleHost
+  CreateEvent: CreateEvent
 }
