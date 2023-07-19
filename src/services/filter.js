@@ -86,21 +86,19 @@ const FilterService = async (
   }
 
   if (arrFil.length != 0) {
-    const houseIdPlaceOffer = await handleFetchPlaceOffer(arrFil, perPage, offSet);
     if (houseIdArr.length == 0) {
+      const houseIdPlaceOffer = await handleFetchPlaceOffer(arrFil, perPage, offSet);
       houseIdArr = houseIdPlaceOffer.map((item, index) => {
         return item.dataValues.HouseId
       })
+      console.log('before add', houseIdArr);
     } else {
-      let arrTemp = [];
-      for (const item of houseIdPlaceOffer) {
-        if (houseIdArr.includes(item.dataValues.HouseId)) {
-          arrTemp.push(item.dataValues.HouseId)
-        }
-      }
-
-      houseIdArr = arrTemp;
+      const houseIdPlaceOffer = await handleFetchPlaceOfferHouseId(arrFil, perPage, offSet, houseIdArr)
+      houseIdArr = houseIdPlaceOffer.map((item, index) => {
+        return item.dataValues.HouseId
+      })
     }
+
   }
 
   console.log('houseidarr', houseIdArr);
@@ -110,8 +108,6 @@ const FilterService = async (
   if (houseIdArr.length != 0) {
     filter.typehouseAme = { HouseId: { [Op.in]: houseIdArr } }
   }
-
-
 
 
   // dinh nghia include va push nhung filter can thiet
@@ -146,8 +142,10 @@ const FilterService = async (
     filter.orientation,
   ]
 
-  if (houseIdArr.length !== 0) {
+  if ((arrFil.length != 0 || typeHouse.length != 0) && houseIdArr.length !== 0) {
     OpAndFilter = [...OpAndFilter, filter.typehouseAme];
+  } else if ((arrFil.length != 0 || typeHouse.length != 0) && houseIdArr.length === 0) {
+    OpAndFilter = [...OpAndFilter, { HouseId: { [Op.in]: ['123123123'] } }]
   }
 
   let filterBlock = {
@@ -157,7 +155,7 @@ const FilterService = async (
     include: include,
   }
 
-  if (houseIdArr.length === 0) {
+  if (typeHouse.length === 0 && arrFil.length === 0) {
     filterBlock = { ...filterBlock, limit: perPage, offset: offSet }
   }
 
@@ -234,6 +232,38 @@ const handleFetchTypeHouse = async (typehouse, perPage, offSet) => {
       offset: offSet,
     });
     return getTypeHouse;
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
+
+const handleFetchPlaceOfferHouseId = async (amenities, perPage, offSet, houseIdArr) => {
+
+  try {
+    let getHousePlaceOffer = await db.house.findAll({
+      attributes: ['HouseId'],
+      where: { HouseId: { [Op.in]: houseIdArr } },
+      include: [
+        {
+          model: db.manageplaceoffer,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: db.placeoffer,
+              required: true,
+              attributes: [],
+              where: { PlaceOffer: { [Op.in]: amenities } },
+            },
+          ],
+        },
+      ],
+      group: ['HouseId'],
+      limit: perPage,
+      offset: offSet,
+    });
+    return getHousePlaceOffer;
   } catch (error) {
     console.log(error);
     return { error };
