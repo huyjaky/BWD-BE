@@ -32,7 +32,7 @@ const Filter = async (req, res) =>{
     const val = req.body;
     const page= req.params._page
     console.log('filter: ', val.datafil.filter);
-    console.log('select', val.datafil.selectPlace);
+
     const fil = await FilterService(val.datafil.filter, val.datafil.selectPlace, page, val.UserId);
 
     if (fil?.error) {

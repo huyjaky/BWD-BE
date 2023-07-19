@@ -89,7 +89,7 @@ const FilterService = async (
     const houseIdPlaceOffer = await handleFetchPlaceOffer(arrFil, perPage, offSet);
     if (houseIdArr.length == 0) {
       houseIdArr = houseIdPlaceOffer.map((item, index) => {
-        return item.dataValues
+        return item.dataValues.HouseId
       })
     } else {
       let arrTemp = [];
@@ -98,15 +98,16 @@ const FilterService = async (
           arrTemp.push(item.dataValues.HouseId)
         }
       }
-      console.log(arrTemp);
+
       houseIdArr = arrTemp;
     }
   }
 
+  console.log('houseidarr', houseIdArr);
+  console.log('perpage', perPage);
+  console.log('offset', offSet);
+
   if (houseIdArr.length != 0) {
-    filter.typehouseAme = { HouseId: { [Op.in]: houseIdArr } }
-  } else {
-    houseIdArr = ['123123123123123123123123']
     filter.typehouseAme = { HouseId: { [Op.in]: houseIdArr } }
   }
 
@@ -137,30 +138,36 @@ const FilterService = async (
   }
 
 
+  let OpAndFilter = [
+    filter.beds,
+    filter.bathRooms,
+    filter.hostLanguage,
+    filter.price,
+    filter.orientation,
+  ]
+
+  if (houseIdArr.length !== 0) {
+    OpAndFilter = [...OpAndFilter, filter.typehouseAme];
+  }
+
+  let filterBlock = {
+    where: {
+      [Op.and]: OpAndFilter,
+    },
+    include: include,
+  }
+
+  if (houseIdArr.length === 0) {
+    filterBlock = { ...filterBlock, limit: perPage, offset: offSet }
+  }
+
 
   try {
-    const getHouse_ = await db.house.findAll({
-      where: {
-        [Op.and]: [
-          filter.beds,
-          filter.bathRooms,
-          filter.hostLanguage,
-          filter.price,
-          filter.orientation,
-          filter.typehouseAme
-        ],
-      },
-
-      include: include,
-      // limit: perPage,
-      // offset: offSet,
-    });
-
+    const getHouse_ = await db.house.findAll(filterBlock);
 
     let extendedHouse = await Promise.all(
       getHouse_.map(async (item) => {
         const arrImg = await handleFetchImg(item.HouseId);
-
         if (UserId) {
           const setIsFavorite = await handleFavorite(item.HouseId, UserId);
           return { ...item.toJSON(), arrImg, IsFavorite: setIsFavorite };
@@ -170,8 +177,7 @@ const FilterService = async (
     );
 
     // console.log('extendedHouse', extendedHouse);
-    console.log('perpage', perPage);
-    console.log('offset', offSet);
+
 
     return extendedHouse;
   } catch (error) {
@@ -204,8 +210,9 @@ const handleFavorite = async (HouseId, UserId) => {
 }
 
 const handleFetchTypeHouse = async (typehouse, perPage, offSet) => {
+
   try {
-    let getHousePlaceOffer = await db.house.findAll({
+    let getTypeHouse = await db.house.findAll({
       attributes: ['HouseId'],
       include: [
         {
@@ -222,11 +229,11 @@ const handleFetchTypeHouse = async (typehouse, perPage, offSet) => {
           ],
         },
       ],
+      group: ['HouseId'],
       limit: perPage,
       offset: offSet,
     });
-
-    return getHousePlaceOffer;
+    return getTypeHouse;
   } catch (error) {
     console.log(error);
     return { error };
@@ -234,6 +241,7 @@ const handleFetchTypeHouse = async (typehouse, perPage, offSet) => {
 };
 
 const handleFetchPlaceOffer = async (amenities, perPage, offSet) => {
+
   try {
     let getHousePlaceOffer = await db.house.findAll({
       attributes: ['HouseId'],
@@ -252,6 +260,7 @@ const handleFetchPlaceOffer = async (amenities, perPage, offSet) => {
           ],
         },
       ],
+      group: ['HouseId'],
       limit: perPage,
       offset: offSet,
     });
