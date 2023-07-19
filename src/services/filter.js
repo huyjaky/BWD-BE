@@ -79,20 +79,32 @@ const FilterService = async (
   // bo loc typehouse va amenities
   let houseIdArr = [];
   if (typeHouse.length != 0) {
-    const houseIdTypeHouse = await handleFetchTypeHouse(typeHouse, perPage, offSet);
-    houseIdArr = houseIdTypeHouse.map((item, index) => {
-      return item.dataValues.HouseId
-    })
+    if ((typeHouse.includes('HouseForRent') && typeHouse.includes('HouseForSale')) && typeHouse.length == 2) {
+      const houseIdTypeHouse = await handleFetchTypeHouse(typeHouse, perPage, offSet);
+      houseIdArr = houseIdTypeHouse.map((item, index) => {
+        return item.dataValues.HouseId
+      })
+    } else if ((typeHouse.includes('HouseForRent') || typeHouse.includes('HouseForSale')) && typeHouse.length !== 1) {
+      const houseIdTypeHouse = await handleFetchTypehouseHouseId(typeHouse, perPage, offSet);
+      houseIdArr = houseIdTypeHouse.map((item, index) => {
+        return item.dataValues.HouseId
+      })
+    } else {
+      const houseIdTypeHouse = await handleFetchTypeHouse(typeHouse, perPage, offSet);
+      houseIdArr = houseIdTypeHouse.map((item, index) => {
+        return item.dataValues.HouseId
+      })
+    }
   }
 
   if (arrFil.length != 0) {
-    if (houseIdArr.length == 0) {
+    if (houseIdArr.length == 0 && (!typeHouse.includes('HouseForRent') && !typeHouse.includes('HouseForSale'))) {
       const houseIdPlaceOffer = await handleFetchPlaceOffer(arrFil, perPage, offSet);
       houseIdArr = houseIdPlaceOffer.map((item, index) => {
         return item.dataValues.HouseId
       })
       console.log('before add', houseIdArr);
-    } else {
+    } else if (houseIdArr.length != 0) {
       const houseIdPlaceOffer = await handleFetchPlaceOfferHouseId(arrFil, perPage, offSet, houseIdArr)
       houseIdArr = houseIdPlaceOffer.map((item, index) => {
         return item.dataValues.HouseId
@@ -153,11 +165,13 @@ const FilterService = async (
       [Op.and]: OpAndFilter,
     },
     include: include,
+    limit: perPage,
+    offset: offSet,
   }
 
-  if (typeHouse.length === 0 && arrFil.length === 0) {
-    filterBlock = { ...filterBlock, limit: perPage, offset: offSet }
-  }
+  // if (typeHouse.length === 0 && arrFil.length === 0) {
+  //   filterBlock = { ...filterBlock, limit: perPage, offset: offSet }
+  // }
 
 
   try {
@@ -207,6 +221,85 @@ const handleFavorite = async (HouseId, UserId) => {
   }
 }
 
+const handleFetchTypehouseHouseId = async (typehouse, perPage, offSet) => {
+
+  try {
+    let getTypeHouse = await db.house.findAll({
+      attributes: ['HouseId'],
+      include: [
+        {
+          model: db.managetypehouse,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: db.typehouse,
+              required: true,
+              attributes: [],
+              where: {
+                TypeHouse: {
+                  [Op.in]: typehouse.map((item) => {
+                    if (item !== 'HouseForSale' &&
+                      item !== 'HouseForRent') {
+                      return item
+                    }
+                    return;
+                  }
+                  )
+                }
+              },
+            },
+          ],
+        },
+      ],
+      group: ['HouseId'],
+      // limit: perPage,
+      // offset: offSet,
+    });
+
+    const tempArr = getTypeHouse;
+    if (typehouse.includes('HouseForRent') || typehouse.includes('HouseForSale')) {
+      getTypeHouse = await db.house.findAll({
+        where: {
+          HouseId: {
+            [Op.in]: tempArr.map((item) => { return item.dataValues.HouseId })
+          }
+        },
+        attributes: ['HouseId'],
+        include: [
+          {
+            model: db.managetypehouse,
+            required: true,
+            attributes: [],
+            include: [
+              {
+                model: db.typehouse,
+                required: true,
+                attributes: [],
+                where: {
+                  TypeHouse: {
+                    [Op.in]: typehouse.map((item) => {
+                      if (item === 'HouseForSale' || item === 'HouseForRent') {
+                        return item
+                      }
+                      return;
+                    })
+                  }
+                },
+              },
+            ],
+          },
+        ],
+        group: ['HouseId'],
+      });
+    }
+    return getTypeHouse;
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
+
 const handleFetchTypeHouse = async (typehouse, perPage, offSet) => {
 
   try {
@@ -228,8 +321,8 @@ const handleFetchTypeHouse = async (typehouse, perPage, offSet) => {
         },
       ],
       group: ['HouseId'],
-      limit: perPage,
-      offset: offSet,
+      // limit: perPage,
+      // offset: offSet,
     });
     return getTypeHouse;
   } catch (error) {
@@ -254,15 +347,71 @@ const handleFetchPlaceOfferHouseId = async (amenities, perPage, offSet, houseIdA
               model: db.placeoffer,
               required: true,
               attributes: [],
-              where: { PlaceOffer: { [Op.in]: amenities } },
+              where: {
+                PlaceOffer: {
+                  [Op.in]: amenities.map((item) => {
+                    if (item === 'Luxury interior' ||
+                      item === 'Full interior' ||
+                      item === 'Empty interior' ||
+                      item === 'Basic interior'
+                    ) {
+                      return
+                    }
+                    return item;
+                  })
+                }
+              },
             },
           ],
         },
       ],
       group: ['HouseId'],
-      limit: perPage,
-      offset: offSet,
+      // limit: perPage,
+      // offset: offSet,
     });
+
+    const tempArr = getHousePlaceOffer;
+    if (amenities.includes('Luxury interior') ||
+      amenities.includes('Full interior') ||
+      amenities.includes('Empty interior') ||
+      amenities.includes('Basic interior')
+    ) {
+      getHousePlaceOffer = await db.house.findAll({
+        attributes: ['HouseId'],
+        where: { HouseId: { [Op.in]: tempArr.map(item => item.dataValues.HouseId) } },
+        include: [
+          {
+            model: db.manageplaceoffer,
+            required: true,
+            attributes: [],
+            include: [
+              {
+                model: db.placeoffer,
+                required: true,
+                attributes: [],
+                where: {
+                  PlaceOffer: {
+                    [Op.in]: amenities.map((item) => {
+                      if (item === 'Luxury interior' ||
+                        item === 'Full interior' ||
+                        item === 'Empty interior' ||
+                        item === 'Basic interior'
+                      ) {
+                        return item
+                      }
+                      return
+                    })
+                  }
+                },
+              },
+            ],
+          },
+        ],
+        group: ['HouseId'],
+        // limit: perPage,
+        // offset: offSet,
+      });
+    }
     return getHousePlaceOffer;
   } catch (error) {
     console.log(error);
