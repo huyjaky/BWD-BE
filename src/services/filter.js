@@ -85,17 +85,20 @@ const FilterService = async (
         return item.dataValues.HouseId
       })
     } else if ((typeHouse.includes('HouseForRent') || typeHouse.includes('HouseForSale')) && typeHouse.length !== 1) {
+      console.log('length 2 but diff ');
       const houseIdTypeHouse = await handleFetchTypehouseHouseId(typeHouse, perPage, offSet);
       houseIdArr = houseIdTypeHouse.map((item, index) => {
         return item.dataValues.HouseId
       })
     } else {
+      console.log('length 1 just typehouse');
       const houseIdTypeHouse = await handleFetchTypeHouse(typeHouse, perPage, offSet);
       houseIdArr = houseIdTypeHouse.map((item, index) => {
         return item.dataValues.HouseId
       })
     }
   }
+  console.log('after type house', houseIdArr);
 
   if (arrFil.length != 0) {
     if (houseIdArr.length == 0 && (!typeHouse.includes('HouseForRent') && !typeHouse.includes('HouseForSale'))) {
@@ -103,17 +106,15 @@ const FilterService = async (
       houseIdArr = houseIdPlaceOffer.map((item, index) => {
         return item.dataValues.HouseId
       })
-      console.log('before add', houseIdArr);
     } else if (houseIdArr.length != 0) {
       const houseIdPlaceOffer = await handleFetchPlaceOfferHouseId(arrFil, perPage, offSet, houseIdArr)
       houseIdArr = houseIdPlaceOffer.map((item, index) => {
         return item.dataValues.HouseId
       })
+      console.log('houseidarr after arrfill', houseIdArr);
     }
-
   }
 
-  console.log('houseidarr', houseIdArr);
   console.log('perpage', perPage);
   console.log('offset', offSet);
 
@@ -370,7 +371,12 @@ const handleFetchPlaceOfferHouseId = async (amenities, perPage, offSet, houseIdA
       // offset: offSet,
     });
 
-    const tempArr = getHousePlaceOffer;
+    let tempArr = getHousePlaceOffer.map(item => item.dataValues.HouseId);
+
+    if (tempArr.length == 0) {
+      tempArr = houseIdArr
+    }
+
     if (amenities.includes('Luxury interior') ||
       amenities.includes('Full interior') ||
       amenities.includes('Empty interior') ||
@@ -378,7 +384,7 @@ const handleFetchPlaceOfferHouseId = async (amenities, perPage, offSet, houseIdA
     ) {
       getHousePlaceOffer = await db.house.findAll({
         attributes: ['HouseId'],
-        where: { HouseId: { [Op.in]: tempArr.map(item => item.dataValues.HouseId) } },
+        where: { HouseId: { [Op.in]: tempArr } },
         include: [
           {
             model: db.manageplaceoffer,

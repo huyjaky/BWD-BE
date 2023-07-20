@@ -1,6 +1,6 @@
 const scheduleServices = require("../services/scheduleServices")
 const { statusReturn } = require("../untils/statusReturn")
-const {v4: uuidv4} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 
 const GetSchedule = async (req, res) => {
@@ -46,10 +46,10 @@ const ModifierSchedule = async (req, res) => {
 
 const CreateSchedule = async (req, res) => {
   try {
-    // console.log({...req.body, EventId: uuidv4()});
-    const result = await scheduleServices.CreateEvent({...req.body, EventId: uuidv4(),
-      HouseId: null,
-      UserId: null,
+    const result = await scheduleServices.CreateEvent({
+      ...req.body, EventId: uuidv4(),
+      HouseId: req?.body?.HouseId !== '' ? req?.body?.HouseId : null,
+      UserId: req?.body?.UserId !== '' ? req?.body?.UserId : null
     });
     if (result?.error) {
       return statusReturn(res, 400, { message: 'error' }, result?.error);
@@ -57,6 +57,7 @@ const CreateSchedule = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
+    console.log(error);
     return statusReturn(res, 400, { error }, error)
   }
 
