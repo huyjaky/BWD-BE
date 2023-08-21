@@ -4,7 +4,7 @@ const db = require("../models");
 
 const ScheduleServicesHost = async (HostId) => {
   try {
-    const schedule = await db.schedule.findAll({ where: { Host: HostId }, })
+    const schedule = await db.schedule.findAll({ where: { Host: HostId }, order: [['Date', 'DESC']]})
     let extendedSchedule = await Promise.all(
       schedule.map(async (item) => {
         if (item.HouseId) {
